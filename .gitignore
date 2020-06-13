@@ -216,3 +216,7 @@ pyvenv.cfg
 pip-selfcheck.json
 
 # End of https://www.toptal.com/developers/gitignore/api/django,python,venv
+
+
+# Files to hide from my online repo
+protracker/protracker/secret_settings.py

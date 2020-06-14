@@ -1,0 +1,9 @@
+{% if all_goals %}
+    <ul>
+    {% for goal in all_goals %}
+        <li><a href="{% url 'tracker:goal_view' goal.id %}">{{ goal.description }}</a></li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No goals are available.</p>
+{% endif %}

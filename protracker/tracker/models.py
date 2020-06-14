@@ -13,6 +13,7 @@ from django.db import models
 ### Reward
 #    Remove Admin Requirement for achieved_date
 #    DateTime -> Date.auto_now
+#    add field for picture of the reward
 
 ### Session
 #    Remove Admin Requirement for achieved_date

@@ -8,17 +8,28 @@
 <p>Total hours remaining: {{goal.hours_remaining}}</p>
 </br>
 <ul>
-{% for milestone in goal.milestone_set.all %}
+    {% for milestone in goal.milestone_set.all %}
     <li class="section-header">Milestone #{{ milestone.id }}</li>
     <li>Total hours included: {{ milestone.hours }}</li>
     <li>Total hours remaining: {{ milestone.hours_remaining }}</li>
     </br>
-{% endfor %}
+    {% endfor %}
 </ul>
 
 <ul>
-{% for reward in goal.reward_set.all %}
+    {% for reward in goal.reward_set.all %}
     <li class="section-header">Reward #{{ reward.id }}</li>
     <li>Description: {{ reward.description }}</li>
-{% endfor %}
+    <br>
+    {% endfor %}
+</ul>
+
+<ul>
+    {% for session in goal.session_set.all %}
+    <li class="section-header">Session #{{ session.id }}</li>
+    <li>Date: {{ session.date }}</li>
+    <li>Hours: {{ session.hour_count }}</li>
+    <li>Difficulty: {{ session.difficulty }}</li>
+    <br>
+    {% endfor %}
 </ul>

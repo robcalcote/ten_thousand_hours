@@ -17,4 +17,7 @@ urlpatterns = [
     path('<int:goal_id>/reward_add/', views.reward_add, name='reward add'),
     path('<int:goal_id>/session_edit/<int:session_id>/', views.session_edit, name='session edit'),
     path('<int:goal_id>/session_add/', views.session_add, name='session add'),
+
+    path('<int:goal_id>/process_totals/', views.process_totals, name='process totals'),
+    path('<int:goal_id>/updated/', views.updated, name='updated'),
 ]

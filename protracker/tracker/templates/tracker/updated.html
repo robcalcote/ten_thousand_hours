@@ -1,0 +1,9 @@
+<h1>{{ goal.description }}</h1>
+
+<ul>
+    {% for session in goal.session_set.all %}
+    <li>Date: {{ session.date }} || Hour Count: {{ session.hour_count }} || Difficulty: {{ session.difficulty }}</li>
+    {% endfor %}
+</ul>
+
+<a href="{% url 'tracker:session add' goal.id %}">Add another session?</a>

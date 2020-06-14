@@ -1,3 +1,13 @@
+{% extends "tracker/base.html" %}
+
+{% block header %}
+<h1>Goal Tracker Dashboard</h1>
+{% endblock %}
+
+{% block content %}
+
+
+
 {% if all_goals %}
     <ul>
     {% for goal in all_goals %}
@@ -7,3 +17,7 @@
 {% else %}
     <p>No goals are available.</p>
 {% endif %}
+
+
+
+{% endblock %}

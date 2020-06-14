@@ -1,31 +1,42 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <link rel="stylesheet" href="./style.css">
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'tracker/style.css' %}">
+    <script src="{% static 'tracker/scripts.js' %}"></script>
     <title>{% block title %}My amazing site{% endblock %}</title>
 </head>
 
 <body>
-    <div id="header-bar">
-        {% block header %}{% endblock %}
+    <div id="top-section">
+        <div id="header-bar">
+            {% block header %}{% endblock %}
+        </div>
+        <button type="button" id="admin-login">Admin Login</button>
     </div>
 
-    <div id="side-nav-bar">
-        {% block sidebar %}
-        <ul>
-            <li><a href="/">Home</a></li>
-            <li><a href="/blog/">Blog</a></li>
-        </ul>
-        {% endblock %}
+    <div id="mid-section">
+        <div id="side-nav-bar">
+            {% block sidebar %}
+            <ul>
+                <li><a href="{% url 'tracker:dashboard' %}">Home</a></li>
+                {% if goal.id %}
+                <li><a href="{% url 'tracker:session add' goal.id %}">Add New Session</a></li>
+                
+                {% endif %}
+            </ul>
+            {% endblock %}
+        </div>
+
+        <div id="content">
+            {% block content %}{% endblock %}
+        </div>
     </div>
 
-    <div id="content">
-        {% block content %}{% endblock %}
+    <div id="bottom-section">
+        <div id="footer-bar">
+            <p>© Rob Calcote (2020)</p>
+        </div>
     </div>
-
-    <div id="footer-bar">
-
-    </div>
-
 </body>
 </html>

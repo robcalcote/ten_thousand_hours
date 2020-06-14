@@ -1,5 +1,10 @@
-<h1>Add new Session towards your Goal: {{ goal.description }}</h1>
+{% extends "tracker/base.html" %}
 
+{% block header %}
+<h1>Add new Session towards your Goal: {{ goal.description }}</h1>
+{% endblock %}
+
+{% block content %}
 {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
 
 <form action="{% url 'tracker:process totals' goal.id %}" method="post">
@@ -9,3 +14,5 @@
     <br>
 <input type="submit" value="submit">
 </form>
+
+{% endblock %}

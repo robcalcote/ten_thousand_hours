@@ -1,4 +1,12 @@
+{% extends "tracker/base.html" %}
+
+{% block header %}
 <h1>{{ goal.description }}</h1>
+{% endblock %}
+
+{% block content %}
+
+
 
 <ul>
     {% for session in goal.session_set.all %}
@@ -7,3 +15,7 @@
 </ul>
 
 <a href="{% url 'tracker:session add' goal.id %}">Add another session?</a>
+
+
+
+{% endblock %}

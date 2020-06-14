@@ -1,6 +1,7 @@
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
+from django.views import generic
 from .models import *
 
 import decimal
@@ -16,13 +17,11 @@ def dashboard(request):
     }
     return render(request, 'tracker/dashboard.html', context)
 
-### GOAL VIEWS
-def goal_view(request, goal_id):
-    goal = get_object_or_404(Goal, pk=goal_id)
-    context = {
-        'goal': goal,
-    }
-    return render(request, 'tracker/goal_view.html', context)
+### GENERIC VIEWS
+class GoalDetailView(generic.DetailView):
+    model = Goal
+
+
 
 def session_add(request, goal_id):
     goal = get_object_or_404(Goal, pk=goal_id)

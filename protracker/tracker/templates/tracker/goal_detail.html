@@ -1,10 +1,17 @@
+{% extends "tracker/base.html" %}
+
+
 <style>
     .section-header {
         font-weight: bolder;
     }
 </style>
 
+{% block header %}
 <h1>{{ goal.description }}</h1>
+{% endblock %}
+
+{% block content %}
 <p>Total hours remaining: {{goal.hours_remaining}}</p>
 </br>
 <ul>
@@ -33,3 +40,7 @@
     <br>
     {% endfor %}
 </ul>
+
+<a href="{% url 'tracker:session add' goal.id %}">Add a session?</a>
+
+{% endblock %}

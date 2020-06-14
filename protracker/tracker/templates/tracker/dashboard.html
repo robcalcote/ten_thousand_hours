@@ -1,7 +1,7 @@
 {% if all_goals %}
     <ul>
     {% for goal in all_goals %}
-        <li><a href="{% url 'tracker:goal view' goal.id %}">{{ goal.description }}</a></li>
+        <li><a href="{% url 'tracker:goal detail' goal.id %}">{{ goal.description }}</a></li>
     {% endfor %}
     </ul>
 {% else %}

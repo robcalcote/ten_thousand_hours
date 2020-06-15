@@ -17,11 +17,38 @@ def dashboard(request):
     }
     return render(request, 'tracker/dashboard.html', context)
 
-### GENERIC VIEWS
+
+### Detail Views (See the details of each individual record)
 class GoalDetailView(generic.DetailView):
     model = Goal
 
+def milestone_detail(request, goal_id, milestone_id):
+    milestone = get_object_or_404(Milestone, pk=milestone_id, goal=goal_id)
+    context = {
+        'goal': milestone.goal,
+        'milestone': milestone,
+    }
+    return render(request, 'tracker/milestone_detail.html', context)
 
+
+### Record add pages (all will be created under their associated goal)
+def goal_add(request):
+    context = {}
+    return render(request, 'tracker/goal_add.html', context)
+
+def milestone_add(request, goal_id):
+    goal = get_object_or_404(Goal, pk=goal_id)
+    context = {
+        'goal': goal,
+    }
+    return render(request, 'tracker/milestone_add.html', context)
+
+def reward_add(request, goal_id):
+    goal = get_object_or_404(Goal, pk=goal_id)
+    context = {
+        'goal': goal,
+    }
+    return render(request, 'tracker/reward_add.html', context)
 
 def session_add(request, goal_id):
     goal = get_object_or_404(Goal, pk=goal_id)
@@ -29,6 +56,7 @@ def session_add(request, goal_id):
         'goal': goal,
     }
     return render(request, 'tracker/session_add.html', context)
+
 
 ### PROCESSING VIEWS
 def process_totals(request, goal_id):
@@ -55,34 +83,36 @@ def updated(request, goal_id):
 
 
 
+# TODO MONDAY!
+# # Add These two views
+# #     reward_view
+# #     session_view
+# # clean forms for:
+# #     milestone
+# #     session
+# #     goal
+# #     reward
+# # Add necessary fields to DB
+# # See notebook
+def reward_view(request, goal_id, reward_id):
+    return HttpResponse("You're looking at Reward %s." % reward_id)
+
+def session_view(request, goal_id, session_id):
+    return HttpResponse("You're looking at Session %s." % session_id)
+
+
+
+
+
 def goal_edit(request, goal_id):
     return HttpResponse("You're looking at the edit page for Goal %s." %goal_id)
-
-def goal_add(request):
-    context = {}
-    return render(request, 'tracker/goal_add.html', context)
-
-### MILESTONE VIEWS
-def milestone_view(request, goal_id, milestone_id):
-    return HttpResponse("You're looking at Milestone %s." %milestone_id)
 
 def milestone_edit(request, goal_id, milestone_id):
     return HttpResponse("You're looking at the edit page for Milestone %s." %milestone_id)
 
-def milestone_add(request, goal_id):
-    return HttpResponse("Add a new milestone here under Goal %s." % goal_id)
-    
-### REWARD VIEWS
-def reward_view(request, goal_id, reward_id):
-    return HttpResponse("You're looking at Reward %s." % reward_id)
-
 def reward_edit(request, goal_id, reward_id):
     return HttpResponse("You're looking at the edit page for Reward %s." % reward_id)
 
-def reward_add(request, goal_id):
-    return HttpResponse("Add a new Reward here!")
-
-### SESSION VIEWS
 def session_edit(request, goal_id, session_id):
     return HttpResponse("You're looking at the edit page for Session %s." % session_id)
 

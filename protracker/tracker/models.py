@@ -20,8 +20,6 @@ from django.db import models
 #    DateTime -> Date.auto_now
 
 
-
-
 # Create your models here.
 class Goal(models.Model):
     description = models.TextField('description of goal')

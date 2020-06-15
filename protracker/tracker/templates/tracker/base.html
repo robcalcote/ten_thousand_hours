@@ -19,10 +19,15 @@
         <div id="side-nav-bar">
             {% block sidebar %}
             <ul>
-                <li><a href="{% url 'tracker:dashboard' %}">Home</a></li>
-                {% if goal.id %}
-                <li><a href="{% url 'tracker:session add' goal.id %}">Add New Session</a></li>
+                <li><a href="{% url 'tracker:dashboard' %}">Home</a></li><br>
+
+                <li><a href="{% url 'tracker:goal add' %}">Add New Goal</a></li><br>
                 
+                {% if goal.id %}
+                <li>{{ goal.description }}</li>
+                <li><a href="{% url 'tracker:milestone add' goal.id %}">Add New Milestone</a></li>
+                <li><a href="{% url 'tracker:reward add' goal.id %}">Add New Reward</a></li>
+                <li><a href="{% url 'tracker:session add' goal.id %}">Add New Session</a></li>
                 {% endif %}
             </ul>
             {% endblock %}

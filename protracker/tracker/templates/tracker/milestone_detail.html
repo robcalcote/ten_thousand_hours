@@ -1,7 +1,7 @@
 {% extends "tracker/base.html" %}
 
 {% block header %}
-<h1>{{ milestone.hours }}</h1>
+<h1>Milestone Hours: {{ milestone.hours }}</h1>
 {% endblock %}
 
 {% block content %}
@@ -12,7 +12,9 @@
 </br>
 <ul>
     {% for reward in milestone.reward_set.all %}
-    <li class="section-header">Reward #{{ reward.id }}</li>
+    <li class="section-header">
+        <a href="{% url 'tracker:reward detail' goal.id reward.milestone.id reward.id %}">Reward #{{ reward.id }}</a>
+    </li>
     <li>Description: {{ reward.description }}</li>
     </br>
     {% endfor %}
@@ -20,7 +22,9 @@
 
 <ul>
     {% for session in milestone.session_set.all %}
-    <li class="section-header">Session #{{ session.id }}</li>
+    <li class="section-header">
+        <a href="{% url 'tracker:session detail' goal.id session.milestone.id session.id %}">Session #{{ session.id }}</a>
+    </li>
     <li>Date: {{ session.date }}</li>
     <li>Hours: {{ session.hour_count }}</li>
     <li>Difficulty: {{ session.difficulty }}</li>

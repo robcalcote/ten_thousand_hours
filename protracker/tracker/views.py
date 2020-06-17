@@ -30,6 +30,25 @@ def milestone_detail(request, goal_id, milestone_id):
     }
     return render(request, 'tracker/milestone_detail.html', context)
 
+def reward_detail(request, goal_id, milestone_id, reward_id):
+    reward = get_object_or_404(Reward, pk=reward_id, goal=goal_id)
+    context = {
+        'goal': reward.goal,
+        'milestone': reward.milestone,
+        'reward': reward,
+    }
+    return render(request, 'tracker/reward_detail.html', context)
+
+def session_detail(request, goal_id, milestone_id, session_id):
+    session = get_object_or_404(Session, pk=session_id, goal=goal_id)
+    context = {
+        'goal': session.goal,
+        'milestone': session.milestone,
+        'session': session,
+    }
+    return render(request, 'tracker/session_detail.html', context)
+
+
 
 ### Record add pages (all will be created under their associated goal)
 def goal_add(request):
@@ -84,9 +103,10 @@ def updated(request, goal_id):
 
 
 # TODO MONDAY!
-# # Add These two views
-# #     reward_view
-# #     session_view
+#x# Add These two views
+#x#     reward_view
+#x#     session_view
+#x#     links from goal -> other record detail view
 # # clean forms for:
 # #     milestone
 # #     session
@@ -94,11 +114,7 @@ def updated(request, goal_id):
 # #     reward
 # # Add necessary fields to DB
 # # See notebook
-def reward_view(request, goal_id, reward_id):
-    return HttpResponse("You're looking at Reward %s." % reward_id)
 
-def session_view(request, goal_id, session_id):
-    return HttpResponse("You're looking at Session %s." % session_id)
 
 
 

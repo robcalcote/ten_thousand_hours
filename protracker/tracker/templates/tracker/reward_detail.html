@@ -1,0 +1,28 @@
+{% extends "tracker/base.html" %}
+
+{% block header %}
+<h1>Reward: {{ reward.description }}</h1>
+{% endblock %}
+
+{% block content %}
+
+
+
+<p>Total Goal hours remaining: {{goal.hours_remaining}}</p>
+</br>
+<p>Total Milestone hours remaining: {{milestone.hours_remaining}}</p>
+</br>
+
+<ul>
+    {% for session in milestone.session_set.all %}
+    <li class="section-header">Session #{{ session.id }}</li>
+    <li>Date: {{ session.date }}</li>
+    <li>Hours: {{ session.hour_count }}</li>
+    <li>Difficulty: {{ session.difficulty }}</li>
+    <br>
+    {% endfor %}
+</ul>
+
+
+
+{% endblock %}

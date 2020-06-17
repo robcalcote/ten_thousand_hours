@@ -1,0 +1,18 @@
+{% extends "tracker/base.html" %}
+
+{% block header %}
+<h1>Session: {{ session.date }}</h1>
+{% endblock %}
+
+{% block content %}
+
+
+
+<p>Total hours in your session: {{ session.hour_count }}</p>
+</br>
+<p>difficulty level of your session: {{ session.difficulty }}</p>
+</br>
+
+
+
+{% endblock %}

@@ -7,15 +7,13 @@ urlpatterns = [
     #localhost:8000/tracker/<INSERT PATH BELOW HERE>
     path('dashboard/', views.dashboard, name='dashboard'),
 
-    #generic views - detail
+    #detail urls
     path('goal_detail/<int:pk>/', views.GoalDetailView.as_view(), name='goal detail'),
-    #path('<int:goal_id>/reward_view/<int:pk>/', views.RewardDetailView.as_view(), name='reward detail'),
-    #path('<int:goal_id>/session_view/<int:pk>/', views.SessionDetailView.as_view(), name='session detail'),
-
-    #generic views - list
     path('<int:goal_id>/milestone_detail/<int:milestone_id>/', views.milestone_detail, name='milestone detail'),
+    path('<int:goal_id>/<int:milestone_id>/reward_detail/<int:reward_id>/', views.reward_detail, name='reward detail'),
+    path('<int:goal_id>/<int:milestone_id>/session_detail/<int:session_id>/', views.session_detail, name='session detail'),
 
-    #record creation urls
+    #record add urls
     path('goal_add/', views.goal_add, name='goal add'),
     path('<int:goal_id>/milestone_add/', views.milestone_add, name='milestone add'),
     path('<int:goal_id>/reward_add/', views.reward_add, name='reward add'),

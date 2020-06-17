@@ -14,10 +14,15 @@ urlpatterns = [
     path('<int:goal_id>/<int:milestone_id>/session_detail/<int:session_id>/', views.session_detail, name='session detail'),
 
     #record add urls
+    path('<int:goal_id>/session_add/', views.session_add, name='session add'),
+    #path('<int:goal_id>/process_session_add/', views.process_session_add, name='process session add'),
+    path('<int:goal_id>/updated/', views.updated, name='updated'),
+
+
+    #to be added
     path('goal_add/', views.goal_add, name='goal add'),
     path('<int:goal_id>/milestone_add/', views.milestone_add, name='milestone add'),
     path('<int:goal_id>/reward_add/', views.reward_add, name='reward add'),
-    path('<int:goal_id>/session_add/', views.session_add, name='session add'),
 
 
 
@@ -28,6 +33,4 @@ urlpatterns = [
 
 
 
-    path('<int:goal_id>/process_totals/', views.process_totals, name='process totals'),
-    path('<int:goal_id>/updated/', views.updated, name='updated'),
 ]

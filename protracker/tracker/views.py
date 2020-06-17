@@ -4,7 +4,11 @@ from django.urls import reverse
 from django.views import generic
 from .models import *
 
+from .forms.forms import SessionAdd
+
+# generic python imports
 import decimal
+import datetime
 
 ### MAIN DASHBOARD VIEW - HIGH OVERVIEW OF EVERYTHING
 def dashboard(request):
@@ -71,33 +75,46 @@ def reward_add(request, goal_id):
 
 def session_add(request, goal_id):
     goal = get_object_or_404(Goal, pk=goal_id)
+    # if this is a POST request we need to process the form data
+    if request.method == 'POST':
+        # create a form instance and populate it with data from the request:
+        form = SessionAdd(request.POST)
+        # check whether it's valid:
+        if form.is_valid():
+            # do stuff from form
+            session_hour_count = decimal.Decimal(request.POST['hour_count'])
+            milestone = get_object_or_404(Milestone, pk=request.POST['milestone'])
+            date = datetime.datetime.now()
+            difficulty = request.POST['difficulty']
+
+            new_session = Session(goal=goal, milestone=milestone, date=date, 
+                hour_count=session_hour_count, difficulty=difficulty)
+            new_session.save()
+
+            goal.hours_remaining = goal.hours_remaining - session_hour_count
+            goal.save()
+
+            milestone.hours_remaining = milestone.hours_remaining - session_hour_count
+            milestone.save()
+
+            return HttpResponseRedirect(reverse('tracker:updated', args=(goal.id,)))
+
+    # if a GET (or any other method) we'll create a blank form
+    else:
+        form = SessionAdd()
     context = {
         'goal': goal,
+        'form': form,
     }
     return render(request, 'tracker/session_add.html', context)
 
 
-### PROCESSING VIEWS
-def process_totals(request, goal_id):
-    goal = get_object_or_404(Goal, pk=goal_id)
-    session_hour_count = decimal.Decimal(request.POST['session-hour-count'])
-    if session_hour_count <= 0:
-        # Redisplay the session add form.
-        return render(request, 'tracker/session_add.html', {
-            'goal': goal,
-            'error_message': "You need to enter a value greater than 0",
-        })
-    else:
-        goal.hours_remaining = goal.hours_remaining - session_hour_count
-        goal.save()
-        # Always return an HttpResponseRedirect after successfully dealing
-        # with POST data. This prevents data from being posted twice if a
-        # user hits the Back button.
-        return HttpResponseRedirect(reverse('tracker:updated', args=(goal.id,)))
-
 def updated(request, goal_id):
     goal = get_object_or_404(Goal, pk=goal_id)
-    return render(request, 'tracker/updated.html', {'goal': goal})
+    context = {
+        'goal': goal,
+    }
+    return render(request, 'tracker/updated.html', context)
 
 
 
@@ -109,9 +126,9 @@ def updated(request, goal_id):
 #x#     links from goal -> other record detail view
 # # clean forms for:
 # #     milestone
-# #     session
 # #     goal
 # #     reward
+#x#     session
 # # Add necessary fields to DB
 # # See notebook
 

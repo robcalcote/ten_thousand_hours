@@ -1,14 +1,14 @@
 {% extends "tracker/base.html" %}
 
 {% block header %}
-<h1>Milestone Hours: {{ milestone.hours }}</h1>
+<h1>Milestone: {{ milestone.description }}</h1>
 {% endblock %}
 
 {% block content %}
 
 
-
-<p>Total hours remaining: {{milestone.hours_remaining}}</p>
+<p>Total Milestone Hours: {{ milestone.hours }}</p>
+<p>Hours remaining: {{ milestone.hours_remaining }}</p>
 </br>
 <ul>
     {% for reward in milestone.reward_set.all %}

@@ -7,8 +7,11 @@
 {% block content %}
 
 
+
+<p>Milestone Description: {{ milestone.description }}</p>
 <p>Total Milestone Hours: {{ milestone.hours }}</p>
 <p>Hours remaining: {{ milestone.hours_remaining }}</p>
+<p>Target End Date: {{ milestone.end_date }}</p>
 </br>
 <ul>
     {% for reward in milestone.reward_set.all %}

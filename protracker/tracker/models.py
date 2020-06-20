@@ -1,7 +1,11 @@
 from django.db import models
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
 
 # Create your models here.
 class Goal(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, default=1)
     description = models.TextField('description of goal')
     hours = models.SmallIntegerField('amount of hours in goal')
     hours_remaining = models.DecimalField('hours remaining', max_digits=10, decimal_places=2)

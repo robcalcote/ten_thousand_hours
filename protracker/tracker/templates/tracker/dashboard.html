@@ -7,7 +7,7 @@
 {% block content %}
 
 
-
+<h2>GOALS:</h2>
 {% if all_goals %}
     <ul>
     {% for goal in all_goals %}
@@ -17,6 +17,40 @@
 {% else %}
     <p>No goals are available.</p>
 {% endif %}
+
+<h2>MILESTONES:</h2>
+{% if all_milestones %}
+    <ul>
+    {% for milestone in all_milestones %}
+        <li><a href="{% url 'tracker:milestone detail' milestone.goal.id milestone.id %}">{{ milestone.description }}</a></li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No milestones are available.</p>
+{% endif %}
+
+<h2>REWARDS:</h2>
+{% if all_rewards %}
+    <ul>
+    {% for reward in all_rewards %}
+        <li><a href="{% url 'tracker:reward detail' reward.goal.id reward.milestone.id reward.id %}">{{ reward.description }}</a></li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No rewards are available.</p>
+{% endif %}
+
+<h2>SESSIONS:</h2>
+{% if all_sessions %}
+<ul>
+{% for session in all_sessions %}
+    <li><a href="{% url 'tracker:session detail' session.goal.id session.milestone.id session.id %}">{{ session.description }}</a></li>
+{% endfor %}
+</ul>
+{% else %}
+<p>No sessions are available.</p>
+{% endif %}
+
 
 
 

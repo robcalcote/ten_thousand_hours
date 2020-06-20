@@ -13,7 +13,6 @@ import decimal
 import datetime
 from datetime import timedelta  
 
-
 ### Auth Views
 def user_login(request):
     if request.method == 'POST':
@@ -49,18 +48,26 @@ def user_register(request):
     
 def user_logout(request):
     logout(request)
-    return render(request, 'tracker/user_login.html', {})
+    form = LoginUser()
+    context = {
+        'form': form,
+    }
+    return render(request, 'tracker/user_login.html', context)
 
 
 ### MAIN DASHBOARD VIEW - HIGH OVERVIEW OF EVERYTHING
 @login_required
 def dashboard(request):
-    all_goals = Goal.objects.all()
-    all_milestones = Milestone.objects.all()
-    all_rewards = Reward.objects.all()
-    all_sessions = Session.objects.all()
+    user = request.user.id
+    all_goals = Goal.objects.filter(user=user)
+    all_milestones = Milestone.objects.filter(goal__user=user)
+    all_rewards = Reward.objects.filter(goal__user=user)
+    all_sessions = Session.objects.filter(goal__user=user)
     context = {
         'all_goals': all_goals,
+        'all_milestones': all_milestones,
+        'all_rewards': all_rewards,
+        'all_sessions': all_sessions,
     }
     return render(request, 'tracker/dashboard.html', context)
 
@@ -69,36 +76,48 @@ def dashboard(request):
 #@login_required is set in the urls.py
 class GoalDetailView(generic.DetailView):
     model = Goal
+    
 
 @login_required
 def milestone_detail(request, goal_id, milestone_id):
-    milestone = get_object_or_404(Milestone, pk=milestone_id, goal=goal_id)
-    context = {
-        'goal': milestone.goal,
-        'milestone': milestone,
-    }
-    return render(request, 'tracker/milestone_detail.html', context)
+    goal = get_object_or_404(Goal, pk=goal_id)
+    if goal.user == request.user:
+        milestone = get_object_or_404(Milestone, pk=milestone_id, goal=goal_id)
+        context = {
+            'goal': milestone.goal,
+            'milestone': milestone,
+        }
+        return render(request, 'tracker/milestone_detail.html', context)
+    else:
+        return render(request, 'tracker/forbidden.html', {})
 
 @login_required
 def reward_detail(request, goal_id, milestone_id, reward_id):
-    reward = get_object_or_404(Reward, pk=reward_id, goal=goal_id)
-    context = {
-        'goal': reward.goal,
-        'milestone': reward.milestone,
-        'reward': reward,
-    }
-    return render(request, 'tracker/reward_detail.html', context)
+    goal = get_object_or_404(Goal, pk=goal_id)
+    if goal.user == request.user:
+        reward = get_object_or_404(Reward, pk=reward_id, goal=goal_id)
+        context = {
+            'goal': reward.goal,
+            'milestone': reward.milestone,
+            'reward': reward,
+        }
+        return render(request, 'tracker/reward_detail.html', context)
+    else:
+        return render(request, 'tracker/forbidden.html', {})
 
 @login_required
 def session_detail(request, goal_id, milestone_id, session_id):
-    session = get_object_or_404(Session, pk=session_id, goal=goal_id)
-    context = {
-        'goal': session.goal,
-        'milestone': session.milestone,
-        'session': session,
-    }
-    return render(request, 'tracker/session_detail.html', context)
-
+    goal = get_object_or_404(Goal, pk=goal_id)
+    if goal.user == request.user:
+        session = get_object_or_404(Session, pk=session_id, goal=goal_id)
+        context = {
+            'goal': session.goal,
+            'milestone': session.milestone,
+            'session': session,
+        }
+        return render(request, 'tracker/session_detail.html', context)
+    else:
+        return render(request, 'tracker/forbidden.html', {})
 
 ### Record Add Views
 @login_required
@@ -112,7 +131,7 @@ def goal_add(request):
             created_date = datetime.datetime.now()
             end_date = created_date + timedelta(days=int(request.POST['end_date']))
             achieved_date = None
-            new_goal = Goal(description=desc, hours=hours, hours_remaining=hours_remaining,
+            new_goal = Goal(user=request.user, description=desc, hours=hours, hours_remaining=hours_remaining,
                 created_date=created_date, end_date=end_date, achieved_date=achieved_date)
             new_goal.save()
             return HttpResponseRedirect(reverse('tracker:dashboard'))

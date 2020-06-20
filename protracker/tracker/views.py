@@ -73,10 +73,16 @@ def dashboard(request):
 
 
 ### Detail Views
-#@login_required is set in the urls.py
-class GoalDetailView(generic.DetailView):
-    model = Goal
-    
+@login_required
+def goal_detail(request, goal_id):
+    goal = get_object_or_404(Goal, pk=goal_id)
+    if goal.user == request.user:
+        context = {
+            'goal': goal,
+        }
+        return render(request, 'tracker/goal_detail.html', context)
+    else:
+        return render(request, 'tracker/forbidden.html', {}) 
 
 @login_required
 def milestone_detail(request, goal_id, milestone_id):

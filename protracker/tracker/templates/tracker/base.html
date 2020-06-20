@@ -12,6 +12,14 @@
         <div id="header-bar">
             {% block header %}{% endblock %}
         </div>
+
+        {% if request.user.is_authenticated == False %}
+        <button type="button" id="user-login">User Login</button>
+        {% endif %}
+        {% if request.user.is_authenticated == True %}
+        <button type="button" id="user-logout">Hello, {{ request.user.first_name }}. Logout?</button>
+        {% endif %}
+
         <button type="button" id="admin-login">Admin Login</button>
     </div>
 

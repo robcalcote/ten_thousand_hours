@@ -40,6 +40,17 @@ h1 {
     top: 10px;
     right: 10px;
 }
+#user-login {
+    position: absolute;
+    top: 10px;
+    right: 110px;
+}
+#user-logout {
+    position: absolute;
+    top: 10px;
+    right: 110px;
+}
+
 
 
 

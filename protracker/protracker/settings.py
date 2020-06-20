@@ -28,6 +28,9 @@ DEBUG = secret_settings.DEBUG
 
 ALLOWED_HOSTS = []
 
+# Login URL
+LOGIN_URL = "/tracker/login/"
+
 
 # Application definition
 

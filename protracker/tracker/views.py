@@ -2,6 +2,8 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
 from django.views import generic
+from django.contrib.auth import authenticate, login, logout, get_user_model
+from django.contrib.auth.decorators import login_required
 from .models import *
 
 from .forms.forms import *
@@ -11,7 +13,47 @@ import decimal
 import datetime
 from datetime import timedelta  
 
+
+### Auth Views
+def user_login(request):
+    if request.method == 'POST':
+        form = LoginUser(request.POST)
+        if form.is_valid():
+            username = form.cleaned_data.get('username')
+            password = form.cleaned_data.get('password')
+            user = authenticate(username=username, password=password)
+            login(request, user)
+            return HttpResponseRedirect(reverse('tracker:dashboard'))
+    else:
+        form = LoginUser()
+    context = {
+        'form': form
+    }
+    return render(request, 'tracker/user_login.html', context)
+
+def user_register(request):
+    if request.method == 'POST':
+        form = RegisterUser(request.POST)
+        if form.is_valid():
+            user = form.save(commit=False)
+            password = form.cleaned_data.get('password')
+            user.set_password(password)
+            user.save()
+            return HttpResponseRedirect(reverse('tracker:user login'))
+    else:
+        form = RegisterUser()
+    context = {
+        'form': form
+    }
+    return render(request, 'tracker/user_register.html', context)  
+    
+def user_logout(request):
+    logout(request)
+    return render(request, 'tracker/user_login.html', {})
+
+
 ### MAIN DASHBOARD VIEW - HIGH OVERVIEW OF EVERYTHING
+@login_required
 def dashboard(request):
     all_goals = Goal.objects.all()
     all_milestones = Milestone.objects.all()
@@ -24,9 +66,11 @@ def dashboard(request):
 
 
 ### Detail Views
+#@login_required is set in the urls.py
 class GoalDetailView(generic.DetailView):
     model = Goal
 
+@login_required
 def milestone_detail(request, goal_id, milestone_id):
     milestone = get_object_or_404(Milestone, pk=milestone_id, goal=goal_id)
     context = {
@@ -35,6 +79,7 @@ def milestone_detail(request, goal_id, milestone_id):
     }
     return render(request, 'tracker/milestone_detail.html', context)
 
+@login_required
 def reward_detail(request, goal_id, milestone_id, reward_id):
     reward = get_object_or_404(Reward, pk=reward_id, goal=goal_id)
     context = {
@@ -44,6 +89,7 @@ def reward_detail(request, goal_id, milestone_id, reward_id):
     }
     return render(request, 'tracker/reward_detail.html', context)
 
+@login_required
 def session_detail(request, goal_id, milestone_id, session_id):
     session = get_object_or_404(Session, pk=session_id, goal=goal_id)
     context = {
@@ -55,6 +101,7 @@ def session_detail(request, goal_id, milestone_id, session_id):
 
 
 ### Record Add Views
+@login_required
 def goal_add(request):
     if request.method == 'POST':
         form = GoalAdd(request.POST)
@@ -76,6 +123,7 @@ def goal_add(request):
     }
     return render(request, 'tracker/goal_add.html', context)
 
+@login_required
 def milestone_add(request, goal_id):
     goal = get_object_or_404(Goal, pk=goal_id)
     if request.method == 'POST':
@@ -104,6 +152,7 @@ def milestone_add(request, goal_id):
 #         for chunk in photo.chunks():
 #             destination.write(chunk)
 
+@login_required
 def reward_add(request, goal_id):
     goal = get_object_or_404(Goal, pk=goal_id)
     if request.method == 'POST':
@@ -126,6 +175,7 @@ def reward_add(request, goal_id):
     }
     return render(request, 'tracker/reward_add.html', context)
 
+@login_required
 def session_add(request, goal_id):
     goal = get_object_or_404(Goal, pk=goal_id)
     # if this is a POST request we need to process the form data
@@ -159,6 +209,7 @@ def session_add(request, goal_id):
 
 
 ### Record Edit Views
+@login_required
 def goal_edit(request, goal_id):
     goal = get_object_or_404(Goal, pk=goal_id)
     days_remaining = goal.end_date.replace(tzinfo=None) - datetime.datetime.now()
@@ -187,6 +238,7 @@ def goal_edit(request, goal_id):
     }
     return render(request, 'tracker/goal_edit.html', context)
 
+@login_required
 def milestone_edit(request, goal_id, milestone_id):
     goal = get_object_or_404(Goal, pk=goal_id)
     milestone = get_object_or_404(Milestone, pk=milestone_id)
@@ -217,6 +269,7 @@ def milestone_edit(request, goal_id, milestone_id):
     }
     return render(request, 'tracker/milestone_edit.html', context)
 
+@login_required
 def reward_edit(request, goal_id, reward_id):
     goal = get_object_or_404(Goal, pk=goal_id)
     reward = get_object_or_404(Reward, pk=reward_id)
@@ -236,6 +289,7 @@ def reward_edit(request, goal_id, reward_id):
     }
     return render(request, 'tracker/reward_edit.html', context)
 
+@login_required
 def session_edit(request, goal_id, session_id):
     goal = get_object_or_404(Goal, pk=goal_id)
     session = get_object_or_404(Session, pk=session_id)

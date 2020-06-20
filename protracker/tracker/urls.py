@@ -18,15 +18,11 @@ urlpatterns = [
     path('<int:goal_id>/milestone_add/', views.milestone_add, name='milestone add'),
     path('<int:goal_id>/reward_add/', views.reward_add, name='reward add'),
     path('<int:goal_id>/session_add/', views.session_add, name='session add'),
-    path('<int:goal_id>/updated/', views.updated, name='updated'),
 
-
-
-    #TO BE ADDED - EDIT FORMS
+    #record edit urls
     path('goal_edit/<int:goal_id>/', views.goal_edit, name='goal edit'),
     path('<int:goal_id>/milestone_edit/<int:milestone_id>/', views.milestone_edit, name='milestone edit'),
     path('<int:goal_id>/reward_edit/<int:reward_id>/', views.reward_edit, name='reward edit'),
     path('<int:goal_id>/session_edit/<int:session_id>/', views.session_edit, name='session edit'),
-
 ]
 

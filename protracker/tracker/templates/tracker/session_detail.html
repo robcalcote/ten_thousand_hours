@@ -7,6 +7,11 @@
 {% block content %}
 
 
+
+<form action="{% url 'tracker:session edit' goal.id session.id %}">
+    <input type="submit" value="Edit your Session?" />
+</form>
+
 <p>{{ session.description }}</p>
 </br>
 <p>Total hours in your session: {{ session.hour_count }}</p>

@@ -9,6 +9,10 @@
 
 
 
+<form action="{% url 'tracker:reward edit' goal.id reward.id %}">
+    <input type="submit" value="Edit your Reward?" />
+</form>
+
 <img src="/protracker/media/uploaded/Chicken-Tikka-Masala-square-FS-51.jpg" >
 
 <p>Total Goal hours remaining: {{goal.hours_remaining}}</p>

@@ -8,6 +8,10 @@
 
 
 
+<form action="{% url 'tracker:milestone edit' goal.id milestone.id %}">
+    <input type="submit" value="Edit your Milestone?" />
+</form>
+
 <p>Milestone Description: {{ milestone.description }}</p>
 <p>Total Milestone Hours: {{ milestone.hours }}</p>
 <p>Hours remaining: {{ milestone.hours_remaining }}</p>

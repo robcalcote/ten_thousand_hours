@@ -8,7 +8,15 @@
 
 
 
-<p>Total hours remaining: {{goal.hours_remaining}}</p>
+<form action="{% url 'tracker:goal edit' goal.id %}">
+    <input type="submit" value="Edit your Goal?" />
+</form>
+
+<p>Total hours in Goal: {{ goal.hours }}</p>
+<p>Total hours remaining: {{ goal.hours_remaining }}</p>
+<p>Created Date: {{ goal.created_date }}</p>
+<p>Target End Date: {{ goal.end_date }}</p>
+<p>Goal Achieved Date: {{ goal.achieved_date }}</p>
 </br>
 <ul>
     {% for milestone in goal.milestone_set.all %}

@@ -47,7 +47,7 @@
     </li>
     <li>Date: {{ session.date }}</li>
     <li>Hours: {{ session.hour_count }}</li>
-    <li>Difficulty: {{ session.difficulty }}</li>
+    <li>Difficulty: {{ session.get_difficulty_display }}</li>
     <br>
     {% endfor %}
 </ul>

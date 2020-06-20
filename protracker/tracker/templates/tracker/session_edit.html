@@ -54,7 +54,7 @@
             <th>
                 <label for="id_difficulty">Session Difficulty:</label>
             </th>
-            <td>{{ session.difficulty }}</td>
+            <td>{{ session.get_difficulty_display }}</td>
             <td>
                 <input type="number" name="difficulty" min="1" max="5" required="" id="id_difficulty" value="{{ session.difficulty }}">
             </td>

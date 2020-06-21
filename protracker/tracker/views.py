@@ -76,54 +76,51 @@ def dashboard(request):
 @login_required
 def goal_detail(request, goal_id):
     goal = get_object_or_404(Goal, pk=goal_id)
-    if goal.user == request.user:
-        context = {
-            'goal': goal,
-        }
-        return render(request, 'tracker/goal_detail.html', context)
-    else:
-        return render(request, 'tracker/forbidden.html', {}) 
+    if goal.user != request.user:
+        return render(request, 'tracker/forbidden.html', {})
+    goal = get_object_or_404(Goal, pk=goal_id)
+    context = {
+        'goal': goal,
+    }
+    return render(request, 'tracker/goal_detail.html', context)
 
 @login_required
 def milestone_detail(request, goal_id, milestone_id):
     goal = get_object_or_404(Goal, pk=goal_id)
-    if goal.user == request.user:
-        milestone = get_object_or_404(Milestone, pk=milestone_id, goal=goal_id)
-        context = {
-            'goal': milestone.goal,
-            'milestone': milestone,
-        }
-        return render(request, 'tracker/milestone_detail.html', context)
-    else:
+    if goal.user != request.user:
         return render(request, 'tracker/forbidden.html', {})
+    milestone = get_object_or_404(Milestone, pk=milestone_id, goal=goal_id)
+    context = {
+        'goal': milestone.goal,
+        'milestone': milestone,
+    }
+    return render(request, 'tracker/milestone_detail.html', context)
 
 @login_required
-def reward_detail(request, goal_id, milestone_id, reward_id):
+def reward_detail(request, goal_id, reward_id):
     goal = get_object_or_404(Goal, pk=goal_id)
-    if goal.user == request.user:
-        reward = get_object_or_404(Reward, pk=reward_id, goal=goal_id)
-        context = {
-            'goal': reward.goal,
-            'milestone': reward.milestone,
-            'reward': reward,
-        }
-        return render(request, 'tracker/reward_detail.html', context)
-    else:
+    if goal.user != request.user:
         return render(request, 'tracker/forbidden.html', {})
+    reward = get_object_or_404(Reward, pk=reward_id, goal=goal_id)
+    context = {
+        'goal': reward.goal,
+        'milestone': reward.milestone,
+        'reward': reward,
+    }
+    return render(request, 'tracker/reward_detail.html', context)
 
 @login_required
-def session_detail(request, goal_id, milestone_id, session_id):
+def session_detail(request, goal_id, session_id):
     goal = get_object_or_404(Goal, pk=goal_id)
-    if goal.user == request.user:
-        session = get_object_or_404(Session, pk=session_id, goal=goal_id)
-        context = {
-            'goal': session.goal,
-            'milestone': session.milestone,
-            'session': session,
-        }
-        return render(request, 'tracker/session_detail.html', context)
-    else:
+    if goal.user != request.user:
         return render(request, 'tracker/forbidden.html', {})
+    session = get_object_or_404(Session, pk=session_id, goal=goal_id)
+    context = {
+        'goal': session.goal,
+        'milestone': session.milestone,
+        'session': session,
+    }
+    return render(request, 'tracker/session_detail.html', context)
 
 ### Record Add Views
 @login_required
@@ -151,6 +148,8 @@ def goal_add(request):
 @login_required
 def milestone_add(request, goal_id):
     goal = get_object_or_404(Goal, pk=goal_id)
+    if goal.user != request.user:
+        return render(request, 'tracker/forbidden.html', {})
     if request.method == 'POST':
         form = MilestoneAdd(request.POST)
         if form.is_valid():
@@ -172,6 +171,7 @@ def milestone_add(request, goal_id):
     }
     return render(request, 'tracker/milestone_add.html', context)
 
+
 # def handle_uploaded_file(photo, milestone):
 #     with open(str(milestone), 'wb+') as destination:
 #         for chunk in photo.chunks():
@@ -180,6 +180,8 @@ def milestone_add(request, goal_id):
 @login_required
 def reward_add(request, goal_id):
     goal = get_object_or_404(Goal, pk=goal_id)
+    if goal.user != request.user:
+        return render(request, 'tracker/forbidden.html', {})
     if request.method == 'POST':
         form = RewardAdd(request.POST, request.FILES)
         if form.is_valid():
@@ -203,13 +205,11 @@ def reward_add(request, goal_id):
 @login_required
 def session_add(request, goal_id):
     goal = get_object_or_404(Goal, pk=goal_id)
-    # if this is a POST request we need to process the form data
+    if goal.user != request.user:
+        return render(request, 'tracker/forbidden.html', {})
     if request.method == 'POST':
-        # create a form instance and populate it with data from the request:
         form = SessionAdd(request.POST)
-        # check whether it's valid:
         if form.is_valid():
-            # do stuff from form
             desc = request.POST['description']
             session_hour_count = decimal.Decimal(request.POST['hour_count'])
             milestone = get_object_or_404(Milestone, pk=request.POST['milestone'])
@@ -223,7 +223,6 @@ def session_add(request, goal_id):
             milestone.hours_remaining = milestone.hours_remaining - session_hour_count
             milestone.save()
             return HttpResponseRedirect(reverse('tracker:goal detail', args=(goal.id,)))
-    # if a GET (or any other method) we'll create a blank form
     else:
         form = SessionAdd()
     context = {
@@ -237,6 +236,8 @@ def session_add(request, goal_id):
 @login_required
 def goal_edit(request, goal_id):
     goal = get_object_or_404(Goal, pk=goal_id)
+    if goal.user != request.user:
+        return render(request, 'tracker/forbidden.html', {})
     days_remaining = goal.end_date.replace(tzinfo=None) - datetime.datetime.now()
     if request.method == 'POST':
         form = GoalEdit(request.POST)
@@ -266,6 +267,8 @@ def goal_edit(request, goal_id):
 @login_required
 def milestone_edit(request, goal_id, milestone_id):
     goal = get_object_or_404(Goal, pk=goal_id)
+    if goal.user != request.user:
+        return render(request, 'tracker/forbidden.html', {})
     milestone = get_object_or_404(Milestone, pk=milestone_id)
     days_remaining = milestone.end_date.replace(tzinfo=None) - datetime.datetime.now()
     if request.method == 'POST':
@@ -297,6 +300,8 @@ def milestone_edit(request, goal_id, milestone_id):
 @login_required
 def reward_edit(request, goal_id, reward_id):
     goal = get_object_or_404(Goal, pk=goal_id)
+    if goal.user != request.user:
+        return render(request, 'tracker/forbidden.html', {})
     reward = get_object_or_404(Reward, pk=reward_id)
     if request.method == 'POST':
         form = RewardEdit(request.POST)
@@ -317,6 +322,8 @@ def reward_edit(request, goal_id, reward_id):
 @login_required
 def session_edit(request, goal_id, session_id):
     goal = get_object_or_404(Goal, pk=goal_id)
+    if goal.user != request.user:
+        return render(request, 'tracker/forbidden.html', {})
     session = get_object_or_404(Session, pk=session_id)
     if request.method == 'POST':
         form = SessionEdit(request.POST)

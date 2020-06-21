@@ -17,8 +17,8 @@ urlpatterns = [
     #detail urls
     path('goal_detail/<int:goal_id>/', views.goal_detail, name='goal detail'),
     path('<int:goal_id>/milestone_detail/<int:milestone_id>/', views.milestone_detail, name='milestone detail'),
-    path('<int:goal_id>/<int:milestone_id>/reward_detail/<int:reward_id>/', views.reward_detail, name='reward detail'),
-    path('<int:goal_id>/<int:milestone_id>/session_detail/<int:session_id>/', views.session_detail, name='session detail'),
+    path('<int:goal_id>/reward_detail/<int:reward_id>/', views.reward_detail, name='reward detail'),
+    path('<int:goal_id>/session_detail/<int:session_id>/', views.session_detail, name='session detail'),
 
     #record add urls
     path('goal_add/', views.goal_add, name='goal add'),

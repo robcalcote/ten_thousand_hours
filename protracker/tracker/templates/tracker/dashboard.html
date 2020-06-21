@@ -33,7 +33,7 @@
 {% if all_rewards %}
     <ul>
     {% for reward in all_rewards %}
-        <li><a href="{% url 'tracker:reward detail' reward.goal.id reward.milestone.id reward.id %}">{{ reward.description }}</a></li>
+        <li><a href="{% url 'tracker:reward detail' reward.goal.id reward.id %}">{{ reward.description }}</a></li>
     {% endfor %}
     </ul>
 {% else %}
@@ -44,7 +44,7 @@
 {% if all_sessions %}
 <ul>
 {% for session in all_sessions %}
-    <li><a href="{% url 'tracker:session detail' session.goal.id session.milestone.id session.id %}">{{ session.description }}</a></li>
+    <li><a href="{% url 'tracker:session detail' session.goal.id session.id %}">{{ session.description }}</a></li>
 {% endfor %}
 </ul>
 {% else %}

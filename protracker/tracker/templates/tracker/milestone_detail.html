@@ -20,7 +20,7 @@
 <ul>
     {% for reward in milestone.reward_set.all %}
     <li class="section-header">
-        <a href="{% url 'tracker:reward detail' goal.id reward.milestone.id reward.id %}">Reward #{{ reward.id }}</a>
+        <a href="{% url 'tracker:reward detail' goal.id reward.id %}">Reward #{{ reward.id }}</a>
     </li>
     <li>Description: {{ reward.description }}</li>
     </br>
@@ -30,7 +30,7 @@
 <ul>
     {% for session in milestone.session_set.all %}
     <li class="section-header">
-        <a href="{% url 'tracker:session detail' goal.id session.milestone.id session.id %}">Session #{{ session.id }}</a>
+        <a href="{% url 'tracker:session detail' goal.id session.id %}">Session #{{ session.id }}</a>
     </li>
     <li>Date: {{ session.date }}</li>
     <li>Hours: {{ session.hour_count }}</li>

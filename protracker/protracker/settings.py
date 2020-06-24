@@ -36,6 +36,7 @@ LOGIN_URL = "/tracker/login/"
 
 INSTALLED_APPS = [
     'tracker.apps.TrackerConfig',
+    'rest_framework',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

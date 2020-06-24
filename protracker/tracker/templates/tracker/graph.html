@@ -1,0 +1,75 @@
+{% extends "tracker/base.html" %}
+
+
+
+{% block header %}
+<h1>Goal Tracker Dashboard</h1>
+{% endblock %}
+
+{% block content %}
+
+{% load static %}
+<script src="{% static 'node_modules/chart.js/dist/Chart.js' %}"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+<h2>GRAPH:</h2>
+
+<div>
+    <canvas id="myChart"></canvas>
+</div>
+
+<script>
+
+var endpoint = '/tracker/api/graph/data/'
+var labels_updated = []
+var hours_total = []
+var sessions = []
+
+$.ajax({
+    method: "GET",
+    url: endpoint,
+    success: function(data){
+        labels = data.labels
+        hours_total = data.hours_total
+        sessions = data.sessions
+        var ctx = document.getElementById('myChart').getContext('2d');
+        var myChart = new Chart(ctx, {
+            // specify the type of chart you want
+            type: 'line',
+            // specify your dataset here
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'sessions totalled',
+                    backgroundColor: 'rgb(0, 128, 0)',
+                    borderColor: 'rgb(70, 130, 180)',
+                    data: hours_total
+                }, {
+                    label: 'sessions individual',
+                    backgroundColor: 'rgb(240, 255, 255)',
+                    borderColor: 'rgb(255, 228, 196)',
+                    data: sessions
+                }]
+            },
+            // options configurations here
+            options: {
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true
+                        }
+                    }]
+                }
+            }
+        });
+    }
+})
+
+
+
+
+</script>
+
+
+
+{% endblock %}

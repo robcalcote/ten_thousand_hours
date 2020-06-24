@@ -1,17 +1,22 @@
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
 from django.views import generic
 from django.contrib.auth import authenticate, login, logout, get_user_model
 from django.contrib.auth.decorators import login_required
-from .models import *
 
+# project speicifc imports
+from .models import *
 from .forms.forms import *
 
 # generic python imports
 import decimal
 import datetime
-from datetime import timedelta  
+from datetime import date, timedelta  
+
+# Django REST framework imports
+from rest_framework.views import APIView
+from rest_framework.response import Response
 
 ### Auth Views
 def user_login(request):
@@ -53,6 +58,51 @@ def user_logout(request):
         'form': form,
     }
     return render(request, 'tracker/user_login.html', context)
+
+
+#Testing a graph view (trying to find a JS graph library that I like)
+class GraphData(APIView):
+    authentication_classes = []
+    permission_classes = []
+
+    def get(self, request, format=JsonResponse):
+        goal = get_object_or_404(Goal, pk=1)
+        labels = [session.date for session in goal.session_set.all()]
+        labels_updated = []
+        session_hours = [session.hour_count for session in goal.session_set.all()]
+        session_hours_clean = []
+        hours_total = []
+
+        for label in labels:
+            labels_updated.append(label.date())
+
+        i = 0
+        while i < len(session_hours):
+            session_hours_clean.append(session_hours[i])
+            session_hours[i] = session_hours[i] + session_hours[i-1]
+            hours_total.append(session_hours[i])
+            i += 1
+
+        data = {
+            "labels": labels_updated,
+            "hours_total": hours_total,
+            "sessions": session_hours_clean
+        }
+        return Response(data)
+
+
+
+
+
+def graph(request, goal_id):
+    goal = get_object_or_404(Goal, pk=goal_id)
+
+    context = {
+        'graph': graph,
+    }
+    return render(request, 'tracker/graph.html', context)
+
+
 
 
 ### MAIN DASHBOARD VIEW - HIGH OVERVIEW OF EVERYTHING

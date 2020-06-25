@@ -226,3 +226,6 @@ protracker/protracker/secret_settings.py
 node_modules/
 package-lock.json
 admin/
+
+# Rest Framework - I figure that with an easy collectstatic any user can load it
+rest_framework/

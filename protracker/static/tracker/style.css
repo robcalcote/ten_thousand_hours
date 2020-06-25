@@ -97,3 +97,23 @@ These sections go in the bottom-section flex-box
     text-align: center;
     padding: 1px;
 }
+
+#content-parent {
+    background-color: tomato;
+}
+
+#content-top {
+    background-color: green;
+}
+
+#content-top-left {
+    background-color: paleturquoise;
+}
+
+#content-top-right {
+    background-color: lawngreen;
+}
+
+#content-bottom {
+    background-color: violet;
+}

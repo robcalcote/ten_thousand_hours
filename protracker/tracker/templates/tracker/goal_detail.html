@@ -5,53 +5,95 @@
 {% endblock %}
 
 {% block content %}
-
+{% load static %}
+<script src="{% static 'node_modules/chart.js/dist/Chart.js' %}"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
 
 <form action="{% url 'tracker:goal edit' goal.id %}">
     <input type="submit" value="Edit your Goal?" />
 </form>
+<div id="content-parent">
+    <div id="content-top">
+        <div id="content-top-left">
+            <p>Total hours in Goal: {{ goal.hours }}</p>
+            <p>Total hours remaining: {{ goal.hours_remaining }}</p>
+            <p>Created Date: {{ goal.created_date }}</p>
+            <p>Target End Date: {{ goal.end_date }}</p>
+            <p>Goal Achieved Date: {{ goal.achieved_date }}</p>
+        </div>
+        <div id="content-top-right">
+            <ul>
+                {% for milestone in goal.milestone_set.all %}
 
-<p>Total hours in Goal: {{ goal.hours }}</p>
-<p>Total hours remaining: {{ goal.hours_remaining }}</p>
-<p>Created Date: {{ goal.created_date }}</p>
-<p>Target End Date: {{ goal.end_date }}</p>
-<p>Goal Achieved Date: {{ goal.achieved_date }}</p>
-</br>
-<ul>
-    {% for milestone in goal.milestone_set.all %}
+                <li class="section-header">
+                    <a href="{% url 'tracker:milestone detail' goal.id milestone.id %}">Milestone #{{ milestone.id }}</a>
+                </li>
+                <li>Total hours included: {{ milestone.hours }}</li>
+                <li>Total hours remaining: {{ milestone.hours_remaining }}</li>
+                </br>
+                {% endfor %}
+            </ul>
+            <ul>
+                {% for reward in goal.reward_set.all %}
+                <li class="section-header">
+                    <a href="{% url 'tracker:reward detail' goal.id reward.id %}">Reward #{{ reward.id }}</a>
+                </li>
+                <li>Description: {{ reward.description }}</li>
+                <br>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+    <div id="content-bottom">
+        <canvas id="myChart"></canvas>
+    </div>
+</div>
 
-    <li class="section-header">
-        <a href="{% url 'tracker:milestone detail' goal.id milestone.id %}">Milestone #{{ milestone.id }}</a>
-    </li>
-    <li>Total hours included: {{ milestone.hours }}</li>
-    <li>Total hours remaining: {{ milestone.hours_remaining }}</li>
-    </br>
-    {% endfor %}
-</ul>
-
-<ul>
-    {% for reward in goal.reward_set.all %}
-    <li class="section-header">
-        <a href="{% url 'tracker:reward detail' goal.id reward.id %}">Reward #{{ reward.id }}</a>
-    </li>
-    <li>Description: {{ reward.description }}</li>
-    <br>
-    {% endfor %}
-</ul>
-
-<ul>
-    {% for session in goal.session_set.all %}
-    <li class="section-header">
-        <a href="{% url 'tracker:session detail' goal.id session.id %}">Session #{{ session.id }}</a>
-    </li>
-    <li>Date: {{ session.date }}</li>
-    <li>Hours: {{ session.hour_count }}</li>
-    <li>Difficulty: {{ session.get_difficulty_display }}</li>
-    <br>
-    {% endfor %}
-</ul>
-
+<!-- Chart.js code -->
+<script>
+    var endpoint = '/tracker/api/graph/data/{{ goal.id }}'
+    var labels_updated = []
+    var hours_total = []
+    var sessions = []
+    
+    $.ajax({
+        method: "GET",
+        url: endpoint,
+        success: function(data){
+            labels = data.labels
+            hours_total = data.hours_total
+            sessions = data.sessions
+            var ctx = document.getElementById('myChart').getContext('2d');
+            var myChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'sessions individual',
+                        backgroundColor: 'rgb(255, 218, 185)',
+                        borderColor: 'rgb(255, 228, 196)',
+                        data: sessions
+                    }, {
+                        label: 'sessions totalled',
+                        backgroundColor: 'rgb(0, 128, 0)',
+                        borderColor: 'rgb(70, 130, 180)',
+                        data: hours_total
+                    }]
+                },
+                options: {
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                beginAtZero: true
+                            }
+                        }]
+                    }
+                }
+            });
+        }
+    });
+    </script>
 
 
 {% endblock %}

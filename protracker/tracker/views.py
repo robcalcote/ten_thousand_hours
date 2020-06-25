@@ -61,12 +61,21 @@ def user_logout(request):
 
 
 #Testing a graph view (trying to find a JS graph library that I like)
+def graph(request, goal_id):
+    goal = get_object_or_404(Goal, pk=goal_id)
+
+    context = {
+        'graph': graph,
+        'goal': goal,
+    }
+    return render(request, 'tracker/graph.html', context)
+
 class GraphData(APIView):
     authentication_classes = []
     permission_classes = []
 
-    def get(self, request, format=JsonResponse):
-        goal = get_object_or_404(Goal, pk=1)
+    def get(self, request, goal_id, format=JsonResponse):
+        goal = get_object_or_404(Goal, pk=goal_id)
         labels = [session.date for session in goal.session_set.all()]
         labels_updated = []
         session_hours = [session.hour_count for session in goal.session_set.all()]
@@ -89,21 +98,6 @@ class GraphData(APIView):
             "sessions": session_hours_clean
         }
         return Response(data)
-
-
-
-
-
-def graph(request, goal_id):
-    goal = get_object_or_404(Goal, pk=goal_id)
-
-    context = {
-        'graph': graph,
-    }
-    return render(request, 'tracker/graph.html', context)
-
-
-
 
 ### MAIN DASHBOARD VIEW - HIGH OVERVIEW OF EVERYTHING
 @login_required

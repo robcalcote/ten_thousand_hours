@@ -38,7 +38,7 @@ urlpatterns = [
     path('<int:goal_id>/graph/', views.graph, name='graph'),
 
     # Testing REST interface
-    path('api/graph/data/', GraphData.as_view())
+    path('api/graph/data/<int:goal_id>/', GraphData.as_view())
 ]
 
 

@@ -8,6 +8,9 @@
 {% load static %}
 <script src="{% static 'node_modules/chart.js/dist/Chart.js' %}"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3"></script>
+<script src="https://cdn.jsdelivr.net/npm/hammerjs@2.0.8"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@0.7.7"></script>
 
 
 <form action="{% url 'tracker:goal edit' goal.id %}">
@@ -27,21 +30,16 @@
                 {% for milestone in goal.milestone_set.all %}
 
                 <li class="section-header">
-                    <a href="{% url 'tracker:milestone detail' goal.id milestone.id %}">Milestone #{{ milestone.id }}</a>
+                    <a href="{% url 'tracker:milestone detail' goal.id milestone.id %}">{{ milestone.description }}</a>
                 </li>
                 <li>Total hours included: {{ milestone.hours }}</li>
                 <li>Total hours remaining: {{ milestone.hours_remaining }}</li>
-                </br>
-                {% endfor %}
-            </ul>
-            <ul>
                 {% for reward in goal.reward_set.all %}
-                <li class="section-header">
-                    <a href="{% url 'tracker:reward detail' goal.id reward.id %}">Reward #{{ reward.id }}</a>
-                </li>
-                <li>Description: {{ reward.description }}</li>
-                <br>
-                {% endfor %}
+                {% if reward.milestone.id == milestone.id %}
+                <li><a href="{% url 'tracker:reward detail' goal.id reward.id %}">Reward: {{ reward.description }}</a></li>
+                {% endif %}
+                </br>
+                {% endfor %}{% endfor %}
             </ul>
         </div>
     </div>
@@ -54,7 +52,8 @@
 <script>
     var endpoint = '/tracker/api/graph/data/{{ goal.id }}'
     var labels_updated = []
-    var hours_total = []
+    var timeline = []
+    var sessions_total = []
     var sessions = []
     
     $.ajax({
@@ -62,7 +61,8 @@
         url: endpoint,
         success: function(data){
             labels = data.labels
-            hours_total = data.hours_total
+            timeline = data.timeline
+            sessions_total = data.sessions_total
             sessions = data.sessions
             var ctx = document.getElementById('myChart').getContext('2d');
             var myChart = new Chart(ctx, {
@@ -70,25 +70,36 @@
                 data: {
                     labels: labels,
                     datasets: [{
+                        label: 'goal timeline',
+                        data: timeline,
+                        pointRadius: 0
+                    }, {
                         label: 'sessions individual',
-                        backgroundColor: 'rgb(255, 218, 185)',
-                        borderColor: 'rgb(255, 228, 196)',
-                        data: sessions
+                        backgroundColor: 'rgb(102, 178, 255)',
+                        borderColor: 'rgb(102, 178, 255)',
+                        data: sessions,
+                        pointRadius: 5
                     }, {
                         label: 'sessions totalled',
-                        backgroundColor: 'rgb(0, 128, 0)',
-                        borderColor: 'rgb(70, 130, 180)',
-                        data: hours_total
+                        backgroundColor: 'rgb(0, 102, 204)',
+                        borderColor: 'rgb(0, 0, 204)',
+                        data: sessions_total,
+                        pointRadius: 5
                     }]
                 },
                 options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    animation: {
+                        duration: 1500
+                    },
                     scales: {
                         yAxes: [{
                             ticks: {
                                 beginAtZero: true
                             }
                         }]
-                    }
+                    },
                 }
             });
         }

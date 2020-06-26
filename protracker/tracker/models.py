@@ -23,6 +23,8 @@ class Milestone(models.Model):
     created_date = models.DateTimeField('date created')
     end_date = models.DateTimeField('end date', null=True)
     achieved_date = models.DateTimeField('date achieved', null=True)
+    def __str__(self):
+        return self.description
 
 class Reward(models.Model):
     goal = models.ForeignKey(Goal, on_delete=models.CASCADE)

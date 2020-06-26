@@ -98,22 +98,29 @@ These sections go in the bottom-section flex-box
     padding: 1px;
 }
 
+
+
+
 #content-parent {
-    background-color: tomato;
+    display: flex;
+    flex-direction: column;
+    height: 95%;
 }
 
 #content-top {
-    background-color: green;
+    display: flex;
+    flex-direction: row;
+    height: 30%;
 }
 
 #content-top-left {
-    background-color: paleturquoise;
+    width: 50%;
 }
 
 #content-top-right {
-    background-color: lawngreen;
+    width: 50%;
 }
 
 #content-bottom {
-    background-color: violet;
+    height: 70%;
 }

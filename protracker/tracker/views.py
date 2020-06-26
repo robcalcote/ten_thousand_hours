@@ -11,6 +11,7 @@ from .forms.forms import *
 
 # generic python imports
 import decimal
+from decimal import *
 import datetime
 from datetime import date, timedelta  
 
@@ -76,26 +77,48 @@ class GraphData(APIView):
 
     def get(self, request, goal_id, format=JsonResponse):
         goal = get_object_or_404(Goal, pk=goal_id)
-        labels = [session.date for session in goal.session_set.all()]
-        labels_updated = []
-        session_hours = [session.hour_count for session in goal.session_set.all()]
-        session_hours_clean = []
-        hours_total = []
 
-        for label in labels:
-            labels_updated.append(label.date())
+        all_sessions = Session.objects.filter(goal=goal)
+        session_hours = [session.hour_count for session in goal.session_set.all()]
+        session_dates = [session.date.date() for session in goal.session_set.all()]
+
+        #context lists
+        labels_updated = []
+        timeline = []
+        sessions_total = []
+        session_individual = []
+
+        delta = goal.end_date - goal.created_date
+        delta_range = delta.days + 1
+        hours_per_day = goal.hours / delta_range
+
+        # load up the arrays for chart.js
+        for i in range(delta_range):
+            day = goal.created_date + timedelta(days=i)
+            labels_updated.append(day.date())
+            timeline.append(hours_per_day*i)
 
         i = 0
-        while i < len(session_hours):
-            session_hours_clean.append(session_hours[i])
-            session_hours[i] = session_hours[i] + session_hours[i-1]
-            hours_total.append(session_hours[i])
+        j = 0
+        current_total = 0
+        while i < len(timeline):
+            day = goal.created_date + timedelta(days=i)
+            if j < len(all_sessions):
+                if day.date() in session_dates:
+                    session_individual.append(session_hours[j])
+                    current_total = current_total + session_hours[j]
+                    sessions_total.append(current_total)
+                    j +=1
+            if day.date() not in session_dates:
+                session_individual.append(0)
+                sessions_total.append(current_total)
             i += 1
 
         data = {
             "labels": labels_updated,
-            "hours_total": hours_total,
-            "sessions": session_hours_clean
+            "timeline": timeline,
+            "sessions_total": sessions_total,
+            "sessions": session_individual
         }
         return Response(data)
 

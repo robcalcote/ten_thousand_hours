@@ -13,6 +13,13 @@ body {
     padding: 75px 0 50px 0
 }
 
+a {
+    color: #ec625f;
+}
+
+p, ul, li {
+    color: #f5eded;
+}
 
 
 #top-section{
@@ -25,8 +32,8 @@ These sections go in the top-section flex-box
 #header-bar
 */
 #header-bar {
-    background-color: #1a1a1d;
-    color: #66fcf1;
+    background-color: #313131;
+    color: #ec625f;
     text-align: center;
     height: 75px;
     margin: 0;
@@ -66,14 +73,49 @@ These sections go in the mid-section flex-box
 #content
 */
 #side-nav-bar {  
-    background-color: #4e4e50;
-    color: #66fcf1;
+    background-color: #414141;
+    color: #ec625f;
     float: left;
     width: 10%
 }
 
+#breadcrumb-container {
+    background-color: #414141;
+}
+
+ul.breadcrumb {
+    padding: 10px 5px;
+    list-style: none;
+    margin: 0;
+  }
+  
+  /* Display list items side by side */
+  ul.breadcrumb li {
+    display: inline;
+    font-size: 18px;
+  }
+  
+  /* Add a slash symbol (/) before/behind each list item */
+  ul.breadcrumb li+li:before {
+    padding: 8px;
+    color: black;
+    content: ">\00a0";
+  }
+  
+  /* Add a color to all links inside the list */
+  ul.breadcrumb li a {
+    color: #ec625f;
+    text-decoration: none;
+  }
+  
+  /* Add a color on mouse-over */
+  ul.breadcrumb li a:hover {
+    color: #ff0000;
+    text-decoration: underline;
+  }
+
 #content {
-    background-color: #c2cad0;
+    background-color: #525252;
     float: left;
     width: 90%;
 }
@@ -92,13 +134,11 @@ These sections go in the bottom-section flex-box
 #footer-bar
 */
 #footer-bar {
-    background-color: #1a1a1d;
-    color: #66fcf1;
+    background-color: #313131;
+    color: #ec625f;
     text-align: center;
     padding: 1px;
 }
-
-
 
 
 #content-parent {

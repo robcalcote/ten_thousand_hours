@@ -4,10 +4,18 @@
 <h1>Session: {{ session.date }}</h1>
 {% endblock %}
 
+{% block breadcrumb %}
+<div id="breadcrumb-container">
+    <ul class="breadcrumb">
+        <li><a href="{% url 'tracker:dashboard' %}">{{ user.first_name }}'s Dashboard</a></li>
+        <li><a href="{% url 'tracker:goal detail' goal.id %}">{{ goal.description }}</a></li>
+        <li><a href="{% url 'tracker:milestone detail' goal.id milestone.id %}">{{ milestone.description }}</a></li>
+        <li>{{ session.date }}</li>
+      </ul>
+</div>
+{% endblock %}
+
 {% block content %}
-
-
-
 <form action="{% url 'tracker:session edit' goal.id session.id %}">
     <input type="submit" value="Edit your Session?" />
 </form>

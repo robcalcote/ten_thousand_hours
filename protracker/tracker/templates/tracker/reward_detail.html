@@ -4,11 +4,19 @@
 <h1>Reward: {{ reward.description }}</h1>
 {% endblock %}
 
+
+{% block breadcrumb %}
+<div id="breadcrumb-container">
+    <ul class="breadcrumb">
+        <li><a href="{% url 'tracker:dashboard' %}">{{ user.first_name }}'s Dashboard</a></li>
+        <li><a href="{% url 'tracker:goal detail' goal.id %}">{{ goal.description }}</a></li>
+        <li><a href="{% url 'tracker:milestone detail' goal.id milestone.id %}">{{ milestone.description }}</a></li>
+        <li>{{ reward.description }}</li>
+      </ul>
+</div>
+{% endblock %}
+
 {% block content %}
-{% load static %}
-
-
-
 <form action="{% url 'tracker:reward edit' goal.id reward.id %}">
     <input type="submit" value="Edit your Reward?" />
 </form>

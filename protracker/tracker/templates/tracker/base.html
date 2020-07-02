@@ -22,10 +22,10 @@
 
         <button type="button" id="admin-login">Admin Login</button>
     </div>
-
     <div id="mid-section">
         <div id="side-nav-bar">
             {% block sidebar %}
+            {% if request.user.is_authenticated == True %}
             <ul>
                 <li><a href="{% url 'tracker:dashboard' %}">Home</a></li><br>
 
@@ -38,10 +38,12 @@
                 <li><a href="{% url 'tracker:session add' goal.id %}">Add New Session</a></li>
                 {% endif %}
             </ul>
+            {% endif %}
             {% endblock %}
         </div>
 
         <div id="content">
+            {% block breadcrumb %}{% endblock %}
             {% block content %}{% endblock %}
         </div>
     </div>

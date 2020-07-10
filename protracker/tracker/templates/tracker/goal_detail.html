@@ -59,11 +59,12 @@
 <!-- Chart.js code -->
 <script>
     var endpoint = '/tracker/api/graph/data/{{ goal.id }}'
-    var labels_updated = []
+    var labels = []
     var timeline = []
     var sessions_total = []
     var sessions = []
-    
+
+
     $.ajax({
         method: "GET",
         url: endpoint,
@@ -89,8 +90,8 @@
                         pointRadius: 5
                     }, {
                         label: 'sessions totalled',
-                        backgroundColor: 'rgb(0, 102, 204)',
-                        borderColor: 'rgb(0, 0, 204)',
+                        //backgroundColor: 'rgb(0, 102, 204)',
+                        borderColor: 'rgb(236, 98, 95)',
                         data: sessions_total,
                         pointRadius: 5
                     }]

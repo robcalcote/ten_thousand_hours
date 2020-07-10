@@ -88,31 +88,83 @@ class GraphData(APIView):
         sessions_total = []
         session_individual = []
 
+        #these variables are used for timeline calculations
         delta = goal.end_date - goal.created_date
         delta_range = delta.days + 1
         hours_per_day = goal.hours / delta_range
 
-        # load up the arrays for chart.js
-        for i in range(delta_range):
-            day = goal.created_date + timedelta(days=i)
-            labels_updated.append(day.date())
-            timeline.append(hours_per_day*i)
 
+        #working on displaying only the preceding and following week...
+        todays_date = datetime.date.today()
+        week_ago = todays_date - datetime.timedelta(days=7)
+        week_forward = todays_date + datetime.timedelta(days=7)
+        delta_from_start = week_ago - goal.created_date.date()
+
+        two_week_delta = week_forward - week_ago
+        for date in range(two_week_delta.days + 1):
+            display_day = week_ago + timedelta(days=date)
+            # this is the date label - keep this as is
+            labels_updated.append(display_day)
+            # this is correctly showing where you SHOULD be at, to be on target, starting from a week ago,
+            # to a week in the future
+            if (((hours_per_day*date)+(hours_per_day*delta_from_start.days)) <= goal.hours):
+                timeline.append((hours_per_day*date)+(hours_per_day*delta_from_start.days))
+            else:
+                timeline.append(goal.hours)
+
+        # this variable is used to be a holder for all the previous hours added
+        total_previous_hours = 0.0
+        # this variable holds all the sessions that math must be done on
+        sessions_to_calculate = []
+        sessions_to_calculate_hours = []
+        for session in goal.session_set.all():
+            if session.date.date() < week_ago:
+                total_previous_hours += float(session.hour_count)
+            if session.date.date() in labels_updated:
+                sessions_to_calculate.append(session.date.date())
+                sessions_to_calculate_hours.append(session.hour_count)
+
+        # tracks current total
         i = 0
+        # tracks individual sessions
         j = 0
-        current_total = 0
-        while i < len(timeline):
-            day = goal.created_date + timedelta(days=i)
-            if j < len(all_sessions):
-                if day.date() in session_dates:
-                    session_individual.append(session_hours[j])
-                    current_total = current_total + session_hours[j]
+        current_total = Decimal(total_previous_hours)
+        while i < 15:
+            day = week_ago + timedelta(days=i)
+            if j < len(sessions_to_calculate):
+                if day in sessions_to_calculate:
+                    session_individual.append(sessions_to_calculate_hours[j])
+                    current_total = current_total + sessions_to_calculate_hours[j]
                     sessions_total.append(current_total)
-                    j +=1
-            if day.date() not in session_dates:
+                    j += 1
+            if day not in sessions_to_calculate:
                 session_individual.append(0)
                 sessions_total.append(current_total)
-            i += 1
+            i +=1
+
+
+
+        ### KEEP THESE IN CASE I WANT TO DISPLAY ALL DATES
+        # load up the arrays for chart.js
+        # for i in range(delta_range):
+        #     day = goal.created_date + timedelta(days=i)
+        #     labels_updated.append(day.date())
+        #     timeline.append(hours_per_day*i)
+        # i = 0
+        # j = 0
+        # current_total = 0
+        # while i < len(timeline):
+        #     day = goal.created_date + timedelta(days=i)
+        #     if j < len(all_sessions):
+        #         if day.date() in session_dates:
+        #             session_individual.append(session_hours[j])
+        #             current_total = current_total + session_hours[j]
+        #             sessions_total.append(current_total)
+        #             j +=1
+        #     if day.date() not in session_dates:
+        #         session_individual.append(0)
+        #         sessions_total.append(current_total)
+        #     i += 1
 
         data = {
             "labels": labels_updated,

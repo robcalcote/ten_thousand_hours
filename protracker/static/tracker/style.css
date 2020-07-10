@@ -144,7 +144,7 @@ These sections go in the bottom-section flex-box
 #content-parent {
     display: flex;
     flex-direction: column;
-    height: 95%;
+    height: 90%;
 }
 
 #content-top {

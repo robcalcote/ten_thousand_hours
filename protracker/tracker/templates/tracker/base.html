@@ -2,56 +2,77 @@
 <html lang="en">
 <head>
     {% load static %}
+    <!-- pure.css -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://unpkg.com/purecss@2.0.3/build/pure-min.css" integrity="sha384-cg6SkqEOCV1NbJoCu11+bm0NvBRc8IYLRGXkmNrqUBfTjmMYwNKPWBTIKyw9mHNJ" crossorigin="anonymous">
+
+    <!-- internal links -->
     <link rel="stylesheet" href="{% static 'tracker/style.css' %}">
     <script src="{% static 'tracker/scripts.js' %}"></script>
     <title>{% block title %}My amazing site{% endblock %}</title>
 </head>
 
 <body>
-    <div id="top-section">
-        <div id="header-bar">
-            {% block header %}{% endblock %}
-        </div>
-
-        {% if request.user.is_authenticated == False %}
-        <button type="button" id="user-login">User Login</button>
-        {% endif %}
-        {% if request.user.is_authenticated == True %}
-        <button type="button" id="user-logout">Hello, {{ request.user.first_name }}. Logout?</button>
-        {% endif %}
-
-        <button type="button" id="admin-login">Admin Login</button>
-    </div>
-    <div id="mid-section">
-        <div id="side-nav-bar">
-            {% block sidebar %}
-            {% if request.user.is_authenticated == True %}
-            <ul>
-                <li><a href="{% url 'tracker:dashboard' %}">Home</a></li><br>
-
-                <li><a href="{% url 'tracker:goal add' %}">Add New Goal</a></li><br>
-                
-                {% if goal.id %}
-                <li>{{ goal.description }}</li>
-                <li><a href="{% url 'tracker:milestone add' goal.id %}">Add New Milestone</a></li>
-                <li><a href="{% url 'tracker:reward add' goal.id %}">Add New Reward</a></li>
-                <li><a href="{% url 'tracker:session add' goal.id %}">Add New Session</a></li>
+    <div id="layout" class="pure-g">
+        <div class="left-bar pure-u-1-4">
+            <div class="header">
+                <h1>{% block header %}{% endblock %}</h1>
+                <h2 class="brand-tagline">{{ request.user.first_name }} {{ request.user.last_name }}</h2>
+                <div>
+                    {% if request.user.is_authenticated == False %}
+                    <button type="button" id="user-login" class="pure-button">User Login</button>
+                    {% endif %}
+                    {% if request.user.is_authenticated == True %}
+                    <button type="button" id="user-logout" class="pure-button">Profile</button>
+                    {% endif %}
+                    {% if request.user.id == 1 %}
+                    <button type="button" id="admin-login" class="pure-button">Admin Login</button>
+                    {% else %}
+                    <button type="button" id="admin-login" class="pure-button pure-button-disabled">Admin Login</button>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="pure-menu side-nav-menu nav-menu">
+                {% block sidebar %}
+                {% if request.user.is_authenticated == True %}
+                <span class="pure-menu-heading">Menu</span>
+                <ul class="pure-menu-list">
+                    <li class="pure-menu-item">
+                        <a href="{% url 'tracker:dashboard' %}" class="pure-menu-link">Home</a>
+                    </li>
+                    <li class="pure-menu-item">
+                        <a href="{% url 'tracker:goal add' %}" class="pure-menu-link">Add New Goal</a>
+                    </li>
+                    {% if goal.id %}
+                    <li class="pure-menu-heading">{{ goal.description }}</li>
+                    <li class="pure-menu-item">
+                        <a href="{% url 'tracker:milestone add' goal.id %}" class="pure-menu-link">Add New Milestone</a>
+                    </li>
+                    <li class="pure-menu-item">
+                        <a href="{% url 'tracker:reward add' goal.id %}" class="pure-menu-link">Add New Reward</a>
+                    </li>                
+                    <li class="pure-menu-item">
+                        <a href="{% url 'tracker:session add' goal.id %}" class="pure-menu-link">Add New Session</a>
+                    </li>
+                    {% endif %}
+                </ul>
                 {% endif %}
-            </ul>
-            {% endif %}
-            {% endblock %}
+                {% endblock %}
+            </div>
+            <div class="footer-bar">
+                <p>© Rob Calcote (2020)</p>
+            </div>
         </div>
-
-        <div id="content">
-            {% block breadcrumb %}{% endblock %}
-            {% block content %}{% endblock %}
-        </div>
-    </div>
-
-    <div id="bottom-section">
-        <div id="footer-bar">
-            <p>© Rob Calcote (2020)</p>
+        <div class="content pure-u-3-4">  
+            <div class="content">
+                {% block breadcrumb %}{% endblock %}
+                {% block content %}{% endblock %}
+            </div>
         </div>
     </div>
+
+    
+
+
 </body>
 </html>

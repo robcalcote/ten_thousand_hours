@@ -1,7 +1,10 @@
 {% extends "tracker/base.html" %}
 
 {% block header %}
-Add new Reward for your Goal: {{ goal.description }}
+    Add new Reward
+{% endblock %}
+{% block subheader %}
+    Parent Goal: {{ goal.description }}
 {% endblock %}
 
 {% block content %}

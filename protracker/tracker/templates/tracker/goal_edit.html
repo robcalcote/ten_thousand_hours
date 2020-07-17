@@ -1,8 +1,12 @@
 {% extends "tracker/base.html" %}
 
 {% block header %}
-Edit: {{ goal.description }}
+    Edit Goal: 
 {% endblock %}
+{% block subheader %}
+    {{ goal.description }}
+{% endblock %}
+
 
 {% block content %}
 

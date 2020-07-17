@@ -1,7 +1,10 @@
 {% extends "tracker/base.html" %}
 
 {% block header %}
-Edit: {{ session.date }}
+    Edit Session: 
+{% endblock %}
+{% block subheader %}
+    {{ session.date }}
 {% endblock %}
 
 {% block content %}

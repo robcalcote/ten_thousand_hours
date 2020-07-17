@@ -1,7 +1,10 @@
 {% extends "tracker/base.html" %}
 
 {% block header %}
-Add new Session towards your Goal: {{ goal.description }}
+    Add new Session
+{% endblock %}
+{% block subheader %}
+    Parent Goal: {{ goal.description }}
 {% endblock %}
 
 {% block content %}

@@ -1,9 +1,11 @@
 {% extends "tracker/base.html" %}
 
 {% block header %}
-Reward: {{ reward.description }}
+    Reward
 {% endblock %}
-
+{% block subheader %}
+    {{ reward.description }}
+{% endblock %}
 
 {% block breadcrumb %}
 <div id="breadcrumb-container">

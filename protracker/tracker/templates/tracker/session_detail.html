@@ -1,7 +1,11 @@
 {% extends "tracker/base.html" %}
 
+
 {% block header %}
-Session: {{ session.date }}
+    Session
+{% endblock %}
+{% block subheader %}
+    {{ session.date }}
 {% endblock %}
 
 {% block breadcrumb %}

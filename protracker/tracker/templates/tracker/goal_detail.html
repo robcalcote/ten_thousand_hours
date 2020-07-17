@@ -1,7 +1,10 @@
 {% extends "tracker/base.html" %}
 
 {% block header %}
-{{ goal.description }}
+    Goal
+{% endblock %}
+{% block subheader %}
+    {{ goal.description }}
 {% endblock %}
 
 {% block breadcrumb %}

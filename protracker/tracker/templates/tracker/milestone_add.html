@@ -1,7 +1,10 @@
 {% extends "tracker/base.html" %}
 
 {% block header %}
-Add new Milestone towards your Goal: {{ goal.description }}
+    Add new Milestone
+{% endblock %}
+{% block subheader %}
+    Parent Goal: {{ goal.description }}
 {% endblock %}
 
 {% block content %}

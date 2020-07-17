@@ -1,7 +1,10 @@
 {% extends "tracker/base.html" %}
 
 {% block header %}
-Milestone: {{ milestone.description }}
+    Milestone
+{% endblock %}
+{% block subheader %}
+    {{ milestone.description }}
 {% endblock %}
 
 

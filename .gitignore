@@ -229,3 +229,7 @@ admin/
 
 # Rest Framework - I figure that with an easy collectstatic any user can load it
 rest_framework/
+
+
+# Scratchpad - keep old code that I'm not confident I want to scrap yet
+scratchpad.py

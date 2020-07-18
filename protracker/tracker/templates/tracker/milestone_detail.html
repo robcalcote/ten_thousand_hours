@@ -7,17 +7,6 @@
     {{ milestone.description }}
 {% endblock %}
 
-
-{% block breadcrumb %}
-<div id="breadcrumb-container">
-    <ul class="breadcrumb">
-        <li><a href="{% url 'tracker:dashboard' %}">{{ user.first_name }}'s Dashboard</a></li>
-        <li><a href="{% url 'tracker:goal detail' goal.id %}">{{ goal.description }}</a></li>
-        <li>{{ milestone.description }}</li>
-      </ul>
-</div>
-{% endblock %}
-
 {% block content %}
 <form action="{% url 'tracker:milestone edit' goal.id milestone.id %}">
     <input type="submit" value="Edit your Milestone?" />

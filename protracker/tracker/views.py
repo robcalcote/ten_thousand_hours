@@ -117,7 +117,7 @@ class GraphData(APIView):
         # this variable holds all the sessions that math must be done on
         sessions_to_calculate = []
         sessions_to_calculate_hours = []
-        for session in goal.session_set.all():
+        for session in goal.session_set.all().order_by('date'):
             if session.date.date() < week_ago:
                 total_previous_hours += float(session.hour_count)
             if session.date.date() in labels_updated:
@@ -138,33 +138,9 @@ class GraphData(APIView):
                     sessions_total.append(current_total)
                     j += 1
             if day not in sessions_to_calculate:
-                session_individual.append(0)
+                session_individual.append(None)
                 sessions_total.append(current_total)
             i +=1
-
-
-
-        ### KEEP THESE IN CASE I WANT TO DISPLAY ALL DATES
-        # load up the arrays for chart.js
-        # for i in range(delta_range):
-        #     day = goal.created_date + timedelta(days=i)
-        #     labels_updated.append(day.date())
-        #     timeline.append(hours_per_day*i)
-        # i = 0
-        # j = 0
-        # current_total = 0
-        # while i < len(timeline):
-        #     day = goal.created_date + timedelta(days=i)
-        #     if j < len(all_sessions):
-        #         if day.date() in session_dates:
-        #             session_individual.append(session_hours[j])
-        #             current_total = current_total + session_hours[j]
-        #             sessions_total.append(current_total)
-        #             j +=1
-        #     if day.date() not in session_dates:
-        #         session_individual.append(0)
-        #         sessions_total.append(current_total)
-        #     i += 1
 
         data = {
             "labels": labels_updated,

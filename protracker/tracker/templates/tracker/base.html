@@ -54,15 +54,25 @@
                         </ul>
                     </li>
                     {% if goal.id %}
-                    <li class="pure-menu-heading">Goal Menu</li>
-                    <li class="pure-menu-item">
-                        <a href="{% url 'tracker:milestone add' goal.id %}" class="pure-menu-link">Add New Milestone</a>
-                    </li>
-                    <li class="pure-menu-item">
-                        <a href="{% url 'tracker:reward add' goal.id %}" class="pure-menu-link">Add New Reward</a>
-                    </li>                
-                    <li class="pure-menu-item">
-                        <a href="{% url 'tracker:session add' goal.id %}" class="pure-menu-link">Add New Session</a>
+                    <li class="pure-menu-item pure-menu-has-children pure-menu-allow-hover">
+                        <a href="#" id="menuLink1" class="pure-menu-link">Current Goal</a>
+                        <ul class="pure-menu-children">
+                            <li class="pure-menu-item pure-menu-disabled">
+                                {{ goal.description }}
+                            </li>
+                            <li class="pure-menu-item">
+                                <a href="{% url 'tracker:goal edit' goal.id %}" class="pure-menu-link">Edit Goal</a>
+                            </li>
+                            <li class="pure-menu-item">
+                                <a href="{% url 'tracker:milestone add' goal.id %}" class="pure-menu-link">Add New Milestone</a>
+                            </li>
+                            <li class="pure-menu-item">
+                                <a href="{% url 'tracker:reward add' goal.id %}" class="pure-menu-link">Add New Reward</a>
+                            </li>                
+                            <li class="pure-menu-item">
+                                <a href="{% url 'tracker:session add' goal.id %}" class="pure-menu-link">Add New Session</a>
+                            </li>
+                        </ul>
                     </li>
                     {% endif %}
                 </ul>

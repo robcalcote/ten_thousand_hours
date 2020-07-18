@@ -7,15 +7,6 @@
     {{ goal.description }}
 {% endblock %}
 
-{% block breadcrumb %}
-<div id="breadcrumb-container">
-    <ul class="breadcrumb">
-        <li><a href="{% url 'tracker:dashboard' %}">{{ user.first_name }}'s Dashboard</a></li>
-        <li>{{ goal.description }}</li>
-      </ul>
-</div>
-{% endblock %}
-
 {% block content %}
 {% load static %}
 <script src="{% static 'node_modules/chart.js/dist/Chart.js' %}"></script>
@@ -24,37 +15,66 @@
 <script src="https://cdn.jsdelivr.net/npm/hammerjs@2.0.8"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@0.7.7"></script>
 
-<form action="{% url 'tracker:goal edit' goal.id %}">
-    <input type="submit" value="Edit your Goal?" />
-</form>
-<div id="content-parent">
-    <div id="content-top">
-        <div id="content-top-left">
-            <p>Total hours in Goal: {{ goal.hours }}</p>
-            <p>Total hours remaining: {{ goal.hours_remaining }}</p>
-            <p>Created Date: {{ goal.created_date }}</p>
-            <p>Target End Date: {{ goal.end_date }}</p>
-            <p>Goal Achieved Date: {{ goal.achieved_date }}</p>
-        </div>
-        <div id="content-top-right">
-            <ul>
-                {% for milestone in goal.milestone_set.all %}
-
-                <li class="section-header">
-                    <a href="{% url 'tracker:milestone detail' goal.id milestone.id %}">{{ milestone.description }}</a>
-                </li>
-                <li>Total hours included: {{ milestone.hours }}</li>
-                <li>Total hours remaining: {{ milestone.hours_remaining }}</li>
-                {% for reward in goal.reward_set.all %}
-                {% if reward.milestone.id == milestone.id %}
-                <li><a href="{% url 'tracker:reward detail' goal.id reward.id %}">Reward: {{ reward.description }}</a></li>
-                {% endif %}
-                </br>
-                {% endfor %}{% endfor %}
-            </ul>
+<div id="content-top" class="pure-g">
+    <div class="pure-u-1-2">
+        <h2>Milestones</h2>
+        <div id="milestone-list">
+            <table class="pure-table">
+                <thead>
+                    <tr>
+                        <th>Description</th>
+                        <th>Total Hours</th>
+                        <th>Hours Remaining</th>
+                        <th>Reward</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for milestone in goal.milestone_set.all %}
+                    <tr>
+                        <td><a href="{% url 'tracker:milestone detail' goal.id milestone.id %}">{{ milestone.description }}</a></td>
+                        <td>{{ milestone.hours }}</td>
+                        <td>{{ milestone.hours_remaining }}</td>
+                        {% for reward in goal.reward_set.all %}
+                        {% if reward.milestone.id == milestone.id %}
+                        <td><a href="{% url 'tracker:reward detail' goal.id reward.id %}">{{ reward.description }}</a></td>
+                        {% else %}
+                        <td></td>
+                        {% endif %}
+                        {% endfor %}
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
     </div>
-    <div id="content-bottom">
+    <div class="pure-u-1-2">
+        <div id="session-list">
+            <h2>Sessions</h2>
+            <table class="pure-table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Hours</th>
+                        <th>Difficulty</th>
+                        <th>Milestone</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for session in goal.session_set.all %}
+                    <tr>
+                        <td><a href="{% url 'tracker:session detail' goal.id session.id %}">{{ session.date }}</a></td>
+                        <td>{{ session.hour_count }}</td>
+                        <td>{{ session.get_difficulty_display }}</td>
+                        <td>{{ session.milestone.description }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<div id="content-bottom" class="pure-g">
+    <div class="pure-u-1-1">
         <canvas id="myChart"></canvas>
     </div>
 </div>
@@ -87,8 +107,8 @@
                         pointRadius: 0
                     }, {
                         label: 'sessions individual',
-                        backgroundColor: 'rgb(102, 178, 255)',
-                        borderColor: 'rgb(102, 178, 255)',
+                        backgroundColor: 'rgb(50, 205, 50)',
+                        borderColor: 'rgb(34, 139, 34)',
                         data: sessions,
                         pointRadius: 5
                     }, {
@@ -112,85 +132,6 @@
                             }
                         }]
                     },
-                    plugins: {
-                        zoom: {
-                            // Container for pan options
-                            pan: {
-                                // Boolean to enable panning
-                                enabled: true,
-
-                                // Panning directions. Remove the appropriate direction to disable
-                                // Eg. 'y' would only allow panning in the y direction
-                                // A function that is called as the user is panning and returns the
-                                // available directions can also be used:
-                                //   mode: function({ chart }) {
-                                //     return 'xy';
-                                //   },
-                                mode: 'xy',
-
-                                rangeMin: {
-                                    // Format of min pan range depends on scale type
-                                    x: null,
-                                    y: 0
-                                },
-                                rangeMax: {
-                                    // Format of max pan range depends on scale type
-                                    x: null,
-                                    y: null
-                                },
-
-                                // On category scale, factor of pan velocity
-                                speed: 1,
-
-                                // Minimal pan distance required before actually applying pan
-                                threshold: 10,
-                            },
-
-                            // Container for zoom options
-                            zoom: {
-                                // Boolean to enable zooming
-                                enabled: true,
-
-                                // Drag-to-zoom effect can be customized
-                                // drag: {
-                                // 	 borderColor: 'rgba(225,225,225,0.3)'
-                                // 	 borderWidth: 5,
-                                // 	 backgroundColor: 'rgb(225,225,225)',
-                                // 	 animationDuration: 0
-                                // },
-
-                                // Zooming directions. Remove the appropriate direction to disable
-                                // Eg. 'y' would only allow zooming in the y direction
-                                // A function that is called as the user is zooming and returns the
-                                // available directions can also be used:
-                                //   mode: function({ chart }) {
-                                //     return 'xy';
-                                //   },
-                                mode: 'xy',
-
-                                rangeMin: {
-                                    // Format of min zoom range depends on scale type
-                                    x: null,
-                                    y: null
-                                },
-                                rangeMax: {
-                                    // Format of max zoom range depends on scale type
-                                    x: null,
-                                    y: null
-                                },
-
-                                // Speed of zoom via mouse wheel
-                                // (percentage of zoom on a wheel event)
-                                speed: .1,
-
-                                // Minimal zoom distance required before actually applying zoom
-                                threshold: 2,
-
-                                // On category scale, minimal zoom level before actually applying zoom
-                                sensitivity: 3,
-                            }
-                        }
-                    }
                 }
             });
         }

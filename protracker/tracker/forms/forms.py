@@ -54,23 +54,23 @@ class RegisterUser(forms.ModelForm):
 
 # RECORD ADD FORMS
 class GoalAdd(forms.Form):
-    description = forms.CharField(label='description of goal', widget=forms.Textarea)
-    hours = forms.IntegerField(label='amount of hours in goal', min_value=0, max_value=99999)
-    end_date = forms.IntegerField(label='in how many days do you want to achieve your goal?', min_value=0, max_value=9999)
+    description = forms.CharField(label='description of goal', widget=forms.Textarea(attrs={'placeholder' : 'Goal Description'}))
+    hours = forms.IntegerField(label='amount of hours in goal', min_value=0, max_value=99999, widget=forms.NumberInput(attrs={'placeholder': 'Number of Hours'}))
+    end_date = forms.IntegerField(label='in how many days do you want to achieve your goal?', min_value=0, max_value=9999, widget=forms.NumberInput(attrs={'placeholder': 'Number of Days'}))
 
 class MilestoneAdd(forms.Form):
-    description = forms.CharField(label='description of milestone', widget=forms.Textarea)
-    hours = forms.IntegerField(label='amount of hours in milestone', min_value=0, max_value=9999)
-    end_date = forms.IntegerField(label='in how many days do you want to achieve your milestone?', min_value=0, max_value=9999)
+    description = forms.CharField(label='description of milestone', widget=forms.Textarea(attrs={'placeholder' : 'Milestone Description'}))
+    hours = forms.IntegerField(label='amount of hours in milestone', min_value=0, max_value=9999, widget=forms.NumberInput(attrs={'placeholder' : 'Milestone Description'}))
+    end_date = forms.IntegerField(label='in how many days do you want to achieve your milestone?', min_value=0, max_value=9999, widget=forms.NumberInput(attrs={'placeholder': 'Number of Days'}))
 
 class RewardAdd(forms.Form):
-    description = forms.CharField(label='description of reward', widget=forms.Textarea)
+    description = forms.CharField(label='description of reward', widget=forms.Textarea(attrs={'placeholder' : 'Reward Description'}))
     # photo = forms.ImageField(label='picture of your reward')
 
 class SessionAdd(forms.Form):
-    description = forms.CharField(label='description of session', widget=forms.Textarea)
-    hour_count = forms.DecimalField(label='number of hours')
-    difficulty = forms.IntegerField(label= 'difficulty level', min_value=1, max_value=5)
+    description = forms.CharField(label='description of session', widget=forms.Textarea(attrs={'placeholder' : 'Session Description'}))
+    hour_count = forms.DecimalField(label='number of hours', widget=forms.NumberInput(attrs={'placeholder' : 'Number of Hours'}))
+    difficulty = forms.IntegerField(label= 'difficulty level')
 
 
 # RECORD EDIT FORMS

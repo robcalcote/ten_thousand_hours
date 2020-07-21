@@ -9,56 +9,62 @@
 
 {% block content %}
 
-
-
 {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
 
-<form action="{% url 'tracker:milestone edit' goal.id milestone.id %}" method="post">
+<form action="{% url 'tracker:milestone edit' goal.id milestone.id %}" method="post" class="pure-form pure-form-aligned">
     {% csrf_token %}
 
-    <table>
-        <tr>
-            <th></th>
-            <th>Original Value</th>
-            <th>New Value</th>
-        </tr>
-        <tr>
-            <th>
-                <label for="id_description">Milestone Description:</label>
-            </th>
-            <td>{{ milestone.description }}</td>
-            <td>
-                <textarea name="description" cols="40" rows="10" required="" id="id_description">{{ milestone.description }}</textarea>            
-            </td>
-        </tr>
-        <tr>
-            <th>
-                <label for="id_hours">Hours in Milestone:</label>
-            </th>
-            <td>{{ milestone.hours }}</td>
-            <td>
-                <input type="number" name="hours" min="0" max="99999" required="" id="id_hours" value="{{ milestone.hours }}">
-            </td>
-        </tr>
-        <tr>
-            <th>
-                <label for="id_end_date">Days Remaining:</label>
-            </th>
-            <td>{{ days_remaining }}</td>
-            <td>
-                <input type="number" name="end_date" min="0" max="9999" required="" id="id_end_date" value="{{ days_remaining }}">
-            </td>
-        </tr>
-        <tr>
-            <th></th><td></td><td><input type="submit" value="submit"></td>
-        </tr>
+    <table class="pure-table">
+        <thead>
+            <tr>
+                <th></th>
+                <th>Original Value</th>
+                <th>New Value</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <th>
+                    <label for="id_description">Milestone Description:</label>
+                </th>
+                <td>{{ milestone.description }}</td>
+                <td>
+                    <div class="pure-control-group">
+                        <textarea name="description" cols="40" rows="10" required="" id="id_description">{{ milestone.description }}</textarea>            
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <th>
+                    <label for="id_hours">Hours in Milestone:</label>
+                </th>
+                <td>{{ milestone.hours }}</td>
+                <td>
+                    <div class="pure-control-group">
+                        <input type="number" name="hours" min="0" max="99999" required="" id="id_hours" value="{{ milestone.hours }}">
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <th>
+                    <label for="id_end_date">Days Remaining:</label>
+                </th>
+                <td>{{ days_remaining }}</td>
+                <td>
+                    <div class="pure-control-group">
+                        <input type="number" name="end_date" min="0" max="9999" required="" id="id_end_date" value="{{ days_remaining }}">
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <th></th><td></td><td>
+                    <div class="pure-controls">
+                        <button type="submit" class="pure-button pure-button-primary">Submit</button>
+                    </div>
+                </td>
+            </tr>
+        </tbody>
     </table>
-    
-    
-
 </form>
-
-
-
 
 {% endblock %}

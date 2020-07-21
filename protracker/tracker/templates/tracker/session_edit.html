@@ -9,69 +9,84 @@
 
 {% block content %}
 
-
-
 {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
 
-<form action="{% url 'tracker:session edit' goal.id session.id %}" method="post">
+<form action="{% url 'tracker:session edit' goal.id session.id %}" method="post" class="pure-form pure-form-aligned">
     {% csrf_token %}
 
-    <table>
-        <tr>
-            <th></th>
-            <th>Original Value</th>
-            <th>New Value</th>
-        </tr>
-        <tr>
-            <th>
-                <label for="id_end_date">Selected Milestone:</label>
-            </th>
-            <td>{{ session.milestone.description }}</td>
-            <td>
-                <select name="milestone" required id=id_milestone value="{{ reward.milestone.id }}">
-                    {% for milestone in goal.milestone_set.all %}
-                        <option value="{{ milestone.id }}">{{ milestone.description }}</option>
-                    {% endfor %}
-                </select>         
-            </td>
-        </tr>
-        <tr>
-            <th>
-                <label for="id_description">Session Description:</label>
-            </th>
-            <td>{{ session.description }}</td>
-            <td>
-                <textarea name="description" cols="40" rows="10" required="" id="id_description">{{ session.description }}</textarea>
-            </td>
-        </tr>
-        <tr>
-            <th>
-                <label for="id_hour_count">Session Hours:</label>
-            </th>
-            <td>{{ session.hour_count }}</td>
-            <td>
-                <input type="number" name="hour_count" step="any" required="" id="id_hour_count" value="{{ session.hour_count }}">
-            </td>
-        </tr>
-        <tr>
-            <th>
-                <label for="id_difficulty">Session Difficulty:</label>
-            </th>
-            <td>{{ session.get_difficulty_display }}</td>
-            <td>
-                <input type="number" name="difficulty" min="1" max="5" required="" id="id_difficulty" value="{{ session.difficulty }}">
-            </td>
-        </tr>
-        <tr>
-            <th></th><td></td><td><input type="submit" value="submit"></td>
-        </tr>
+    <table class="pure-table">
+        <thead>
+            <tr>
+                <th></th>
+                <th>Original Value</th>
+                <th>New Value</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <th>
+                    <label for="id_description">Session Description:</label>
+                </th>
+                <td>{{ session.description }}</td>
+                <td>
+                    <div class="pure-control-group">
+                        <textarea name="description" cols="40" rows="10" required="" id="id_description">{{ session.description }}</textarea>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <th>
+                    <label for="id_hour_count">Session Hours:</label>
+                </th>
+                <td>{{ session.hour_count }}</td>
+                <td>
+                    <div class="pure-control-group">
+                        <input type="number" name="hour_count" step="any" required="" id="id_hour_count" value="{{ session.hour_count }}">
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <th>
+                    <label for="id_difficulty">Session Difficulty:</label>
+                </th>
+                <td>{{ session.get_difficulty_display }}</td>
+                <td>
+                    <div class="pure-control-group">
+                        <select name="difficulty" required id="id_difficulty">
+                            <option value="{{ session.difficulty }}">{{ session.get_difficulty_display }}</option>
+                            <option value="1">Very Easy</option>
+                            <option value="2">Easy</option>
+                            <option value="3">Moderate</option>
+                            <option value="4">Hard</option>
+                            <option value="5">Very Hard</option>
+                        </select>                    
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <th>
+                    <label for="id_end_date">Selected Milestone:</label>
+                </th>
+                <td>{{ session.milestone.description }}</td>
+                <td>
+                    <div class="pure-control-group">
+                        <select name="milestone" required id=id_milestone value="{{ reward.milestone.id }}">
+                            {% for milestone in goal.milestone_set.all %}
+                                <option value="{{ milestone.id }}">{{ milestone.description }}</option>
+                            {% endfor %}
+                        </select>   
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <th></th><td></td><td>
+                    <div class="pure-controls">
+                        <button type="submit" class="pure-button pure-button-primary">Submit</button>
+                    </div>
+                </td>
+            </tr>
+        </tbody>
     </table>
-    
-    
-
 </form>
-
-
-
 
 {% endblock %}

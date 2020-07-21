@@ -60,6 +60,11 @@
                             <li class="pure-menu-item pure-menu-disabled">
                                 {{ goal.description }}
                             </li>
+                            {% if '/tracker/goal_detail/' not in request.path %}
+                            <li class="pure-menu-item">
+                                <a href="{% url 'tracker:goal detail' goal.id %}" class="pure-menu-link">Return to Goal</a>
+                            </li>
+                            {% endif %}
                             <li class="pure-menu-item">
                                 <a href="{% url 'tracker:goal edit' goal.id %}" class="pure-menu-link">Edit Goal</a>
                             </li>

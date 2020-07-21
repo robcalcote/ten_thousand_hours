@@ -63,6 +63,7 @@ h2 {
     height: 100%;
     background-color: #363636;
     color: #ec625f;
+    position: relative;
 }
 
 .pure-u-1-2 {
@@ -86,4 +87,73 @@ h2 {
 
 .pure-u-1-1 {
     height: 100%;
+}
+
+/* Add/Edit Forms */
+#add-form {
+    width: 100%;
+}
+
+/* PURE.CSS OVERRIDES */
+/* zebra-stripes override color */
+.pure-table-striped tr:nth-child(2n-1) td {
+    background-color: #313131;
+}
+/* remove surrounding white border */
+.pure-table {
+    border: none;
+}
+/* remove inside cell vertical border */
+.pure-table td, .pure-table th {
+    border-left: none;
+}
+/* pure forms stretch to 60% of page and center */
+.pure-control-group, .pure-controls {
+    text-align: center;
+}
+.pure-control-group > textarea, input, select {
+    text-align-last:center;
+    resize: none;
+    margin: auto;
+    text-align: center;
+    width: 75%;
+}
+.pure-form-aligned > .pure-controls { margin: 0; }
+.pure-controls > button {
+    margin: 0 auto;
+    text-align: center;
+    width: 75%;
+}
+/* center form vertically */
+.pure-form-aligned {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 100%;
+    transform: translate(-50%, -50%);
+}
+/* pure Submit Button coloring */
+.pure-button-primary {
+    background-color: #32cd32;
+    color: #000000;
+}
+/* pure form recoloring */
+.pure-control-group > textarea, input, select {
+    background-color: #313131;
+    color: white;
+}
+.pure-form select {
+    background-color: #313131;
+    color: white;
+}
+/* edit forms styling (targeting table elements mostly) */
+.pure-form > .pure-table {
+    margin: 0 auto;
+    width: 100%;
+}
+.pure-form > .pure-table .pure-controls {
+    margin: 0;
+}
+.pure-form > .pure-table thead, tbody {
+    text-align: center;
 }

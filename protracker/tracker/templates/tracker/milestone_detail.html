@@ -72,6 +72,23 @@ Sessions
     <p>Hours remaining: {{ milestone.hours_remaining }}</p>
     <p>Target End Date: {{ milestone.end_date }}</p>
     </br>
+
+
+    <!-- TEST MODAL CODE -->
+    <!-- Trigger/Open The Modal -->
+    <button id="edit-record-button">TEST Edit Milestone</button>
+
+    <!-- The Modal -->
+    <div id="edit-record-modal" class="modal">
+        <!-- Modal content -->
+        <div class="edit-record-modal-content">
+            <span class="close-modal">&times;</span>
+            <p>Some text in the Modal..</p>
+        </div>
+    </div>
+    <!-- END TEST CODE -->
+
+
     <form action="{% url 'tracker:milestone edit' goal.id milestone.id %}">
         <input type="submit" value="Edit your Milestone?" />
     </form>

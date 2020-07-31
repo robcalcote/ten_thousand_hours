@@ -1,44 +1,79 @@
-{% extends "tracker/base.html" %}
+{% extends "tracker/base_detail.html" %}
 
 {% block header %}
-    Milestone
+Milestone
 {% endblock %}
+
 {% block subheader %}
-    {{ milestone.description }}
+{{ milestone.description }}
 {% endblock %}
 
-{% block content %}
-<form action="{% url 'tracker:milestone edit' goal.id milestone.id %}">
-    <input type="submit" value="Edit your Milestone?" />
-</form>
+{% block top_left_title %}
+Rewards
+{% endblock %}
 
-<p>Milestone Description: {{ milestone.description }}</p>
-<p>Total Milestone Hours: {{ milestone.hours }}</p>
-<p>Hours remaining: {{ milestone.hours_remaining }}</p>
-<p>Target End Date: {{ milestone.end_date }}</p>
-</br>
-<ul>
-    {% for reward in milestone.reward_set.all %}
-    <li class="section-header">
-        <a href="{% url 'tracker:reward detail' goal.id reward.id %}">Reward #{{ reward.id }}</a>
-    </li>
-    <li>Description: {{ reward.description }}</li>
+{% block top_right_title %}
+Sessions
+{% endblock %}
+
+{% block top_left_table %}
+<div id="reward-list">
+    <table class="pure-table pure-table-striped">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Description</th>
+                <th>Rewarded Date</th>
+                <th>Photo</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for reward in milestone.reward_set.all %}
+            <tr>
+                <td><a href="{% url 'tracker:reward detail' goal.id reward.id %}">{{ reward.id }}</a></td>
+                <td>{{ reward.description }}</td>
+                <td>{{ reward.rewarded_date }}</td>
+                <td>{{ reward.photo }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
+
+{% block top_right_table %}
+<div id="session-list">
+    <table class="pure-table pure-table-striped">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Hours</th>
+                <th>Difficulty</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for session in milestone.session_set.all %}
+            <tr>
+                <td><a href="{% url 'tracker:session detail' goal.id session.id %}">{{ session.date }}</a></td>
+                <td>{{ session.hour_count }}</td>
+                <td>{{ session.get_difficulty_display }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
+
+
+{% block chartjs %}
+<div class="pure-u-1-1">
+    <p>Milestone Description: {{ milestone.description }}</p>
+    <p>Total Milestone Hours: {{ milestone.hours }}</p>
+    <p>Hours remaining: {{ milestone.hours_remaining }}</p>
+    <p>Target End Date: {{ milestone.end_date }}</p>
     </br>
-    {% endfor %}
-</ul>
-
-<ul>
-    {% for session in milestone.session_set.all %}
-    <li class="section-header">
-        <a href="{% url 'tracker:session detail' goal.id session.id %}">Session #{{ session.id }}</a>
-    </li>
-    <li>Date: {{ session.date }}</li>
-    <li>Hours: {{ session.hour_count }}</li>
-    <li>Difficulty: {{ session.difficulty }}</li>
-    <br>
-    {% endfor %}
-</ul>
-
-
-
+    <form action="{% url 'tracker:milestone edit' goal.id milestone.id %}">
+        <input type="submit" value="Edit your Milestone?" />
+    </form>
+</div>
 {% endblock %}

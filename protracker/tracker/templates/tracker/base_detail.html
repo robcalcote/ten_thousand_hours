@@ -1,0 +1,29 @@
+{% extends "tracker/base.html" %}
+
+{% block content %}
+<div id="content-bottom" class="pure-g">
+    {% block chartjs %}{% endblock %}
+</div>
+
+<div  id="content-top">
+    <div class="pure-g top-half-title">
+        <div class="pure-u-1-2 section-title">
+            <h3>{% block top_left_title %}{% endblock %}</h3>
+        </div>
+        <div class="pure-u-1-2 section-title">
+            <h3>{% block top_right_title %}{% endblock %}</h3>
+        </div> 
+    </div>
+
+    <div class="pure-g top-half">
+        <div class="pure-u-1-2">
+            {% block top_left_table %}{% endblock %}
+        </div>
+        <div class="pure-u-1-2">
+            {% block top_right_table %}{% endblock %}
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}

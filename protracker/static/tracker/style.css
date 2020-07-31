@@ -8,57 +8,59 @@ html,body {
     box-sizing: border-box;
 }
 
-#layout {
-    height: 100%;
-    overflow:hidden;
-}
-
 a {
     color: white;
 }
 
 
+
+
 /* side bar is 1/4 of the page */
+#layout {
+    height: 100%;
+    overflow:hidden;
+}
 .left-bar {
     height: 100%;
     background-color: #313131;
     color: #ec625f;
     text-align: center;
 }
-
 .header {
     height: 25%;
 }
-
 h1 { 
     padding: 70px 20px 0px 20px;
     margin: 0px;
     font: 2.125em;
 }
-
 h2 {
     text-align: center;
     padding: 20px;
     margin: 0px;
 }
-
 .nav-menu {
     height: 70%;
     background-color: #313131;
     color: #ec625f;
 }
-
 .footer-bar {
     height: 5%;
 }
-
 .footer-bar p {
     padding: 20px 0;
     margin: 0;
 }
 
 
+
+
 /* main bar is 3/4 of the page */
+h3 {
+    text-align: center;
+    padding: 10px;
+    margin: 0px;
+}
 .content {
     height: 100%;
     background-color: #363636;
@@ -74,7 +76,10 @@ h2 {
 /* Overriding the above gutters for just the chart.js div */
 .content > .pure-g > div[class*="pure-u-1-1"] {
     padding: 0em;
-    box-sizing: border-box;
+}
+/* Overriding gutters for top_left and top_right titles */
+.content > #content-top > .pure-g > div[class="pure-u-1-2 section-title"] {
+    padding: 0em;
 }
 
 #content-top {
@@ -87,6 +92,14 @@ h2 {
 
 .pure-u-1-1 {
     height: 100%;
+}
+
+/* Top-section layout organization */
+.top-half {
+    height: 90%;
+}
+.top-half-title {
+    height: 10%;
 }
 
 /* Add/Edit Forms */
@@ -156,4 +169,11 @@ h2 {
 }
 .pure-form > .pure-table thead, tbody {
     text-align: center;
+}
+th {
+    text-align: center;
+}
+/* base_detail pure tables to span 100% of width */
+.pure-table {
+    width: 100%;
 }

@@ -59,7 +59,7 @@ Sessions
             </tr>
         </thead>
         <tbody>
-            {% for session in goal.session_set.all %}
+            {% for session in sessions %}
             <tr>
                 <td><a href="{% url 'tracker:session detail' goal.id session.id %}">{{ session.date }}</a></td>
                 <td>{{ session.hour_count }}</td>

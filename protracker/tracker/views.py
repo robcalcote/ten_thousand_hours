@@ -174,8 +174,10 @@ def goal_detail(request, goal_id):
     if goal.user != request.user:
         return render(request, 'tracker/forbidden.html', {})
     goal = get_object_or_404(Goal, pk=goal_id)
+    sessions = goal.session_set.order_by('-date')
     context = {
         'goal': goal,
+        'sessions': sessions,
     }
     return render(request, 'tracker/goal_detail.html', context)
 
@@ -185,9 +187,11 @@ def milestone_detail(request, goal_id, milestone_id):
     if goal.user != request.user:
         return render(request, 'tracker/forbidden.html', {})
     milestone = get_object_or_404(Milestone, pk=milestone_id, goal=goal_id)
+    sessions = milestone.session_set.order_by('-date')
     context = {
         'goal': milestone.goal,
         'milestone': milestone,
+        'sessions': sessions,
     }
     return render(request, 'tracker/milestone_detail.html', context)
 

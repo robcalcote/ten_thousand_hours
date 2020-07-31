@@ -34,9 +34,6 @@ urlpatterns = [
     path('<int:goal_id>/reward_edit/<int:reward_id>/', views.reward_edit, name='reward edit'),
     path('<int:goal_id>/session_edit/<int:session_id>/', views.session_edit, name='session edit'),
 
-    #Testing a graph page - trying to find a graph library I like
-    path('<int:goal_id>/graph/', views.graph, name='graph'),
-
     # Testing REST interface
     path('api/graph/data/<int:goal_id>/', GraphData.as_view())
 ]

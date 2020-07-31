@@ -60,17 +60,37 @@ def user_logout(request):
     }
     return render(request, 'tracker/user_login.html', context)
 
-
-#Testing a graph view (trying to find a JS graph library that I like)
-def graph(request, goal_id):
-    goal = get_object_or_404(Goal, pk=goal_id)
-
+### MAIN DASHBOARD VIEW - HIGH OVERVIEW OF EVERYTHING
+@login_required
+def dashboard(request):
+    user = request.user.id
+    all_goals = Goal.objects.filter(user=user)
+    all_milestones = Milestone.objects.filter(goal__user=user)
+    all_rewards = Reward.objects.filter(goal__user=user)
+    all_sessions = Session.objects.filter(goal__user=user)
     context = {
-        'graph': graph,
-        'goal': goal,
+        'all_goals': all_goals,
+        'all_milestones': all_milestones,
+        'all_rewards': all_rewards,
+        'all_sessions': all_sessions,
     }
-    return render(request, 'tracker/graph.html', context)
+    return render(request, 'tracker/dashboard.html', context)
 
+### Detail Views
+@login_required
+def goal_detail(request, goal_id):
+    goal = get_object_or_404(Goal, pk=goal_id)
+    if goal.user != request.user:
+        return render(request, 'tracker/forbidden.html', {})
+    goal = get_object_or_404(Goal, pk=goal_id)
+    sessions = goal.session_set.order_by('-date')
+    context = {
+        'goal': goal,
+        'sessions': sessions,
+    }
+    return render(request, 'tracker/goal_detail.html', context)
+
+### Chart.js view within the goal_detail view
 class GraphData(APIView):
     authentication_classes = []
     permission_classes = []
@@ -92,7 +112,6 @@ class GraphData(APIView):
         delta = goal.end_date - goal.created_date
         delta_range = delta.days + 1
         hours_per_day = goal.hours / delta_range
-
 
         #working on displaying only the preceding and following week...
         todays_date = datetime.date.today()
@@ -149,37 +168,6 @@ class GraphData(APIView):
             "sessions": session_individual
         }
         return Response(data)
-
-### MAIN DASHBOARD VIEW - HIGH OVERVIEW OF EVERYTHING
-@login_required
-def dashboard(request):
-    user = request.user.id
-    all_goals = Goal.objects.filter(user=user)
-    all_milestones = Milestone.objects.filter(goal__user=user)
-    all_rewards = Reward.objects.filter(goal__user=user)
-    all_sessions = Session.objects.filter(goal__user=user)
-    context = {
-        'all_goals': all_goals,
-        'all_milestones': all_milestones,
-        'all_rewards': all_rewards,
-        'all_sessions': all_sessions,
-    }
-    return render(request, 'tracker/dashboard.html', context)
-
-
-### Detail Views
-@login_required
-def goal_detail(request, goal_id):
-    goal = get_object_or_404(Goal, pk=goal_id)
-    if goal.user != request.user:
-        return render(request, 'tracker/forbidden.html', {})
-    goal = get_object_or_404(Goal, pk=goal_id)
-    sessions = goal.session_set.order_by('-date')
-    context = {
-        'goal': goal,
-        'sessions': sessions,
-    }
-    return render(request, 'tracker/goal_detail.html', context)
 
 @login_required
 def milestone_detail(request, goal_id, milestone_id):

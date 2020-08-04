@@ -8,6 +8,71 @@ Milestone
 {{ milestone.description }}
 {% endblock %}
 
+{% block edit_modal_title %}
+Edit Milestone: {{ milestone.description }}
+{% endblock %}
+
+{% block edit_modal %}
+{% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+<div>
+    <form action="{% url 'tracker:milestone detail' goal.id milestone.id %}" method="post" class="pure-form pure-form-aligned">
+        {% csrf_token %}
+
+        <table class="pure-table">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>Original Value</th>
+                    <th>New Value</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th>
+                        <label for="id_description">Milestone Description:</label>
+                    </th>
+                    <td>{{ milestone.description }}</td>
+                    <td>
+                        <div class="pure-control-group">
+                            <textarea name="description" cols="40" rows="10" required="" id="id_description">{{ milestone.description }}</textarea>            
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <th>
+                        <label for="id_hours">Hours in Milestone:</label>
+                    </th>
+                    <td>{{ milestone.hours }}</td>
+                    <td>
+                        <div class="pure-control-group">
+                            <input type="number" name="hours" min="0" max="99999" required="" id="id_hours" value="{{ milestone.hours }}">
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <th>
+                        <label for="id_end_date">Days Remaining:</label>
+                    </th>
+                    <td>{{ days_remaining }}</td>
+                    <td>
+                        <div class="pure-control-group">
+                            <input type="number" name="end_date" min="0" max="9999" required="" id="id_end_date" value="{{ days_remaining }}">
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <th></th><td></td><td>
+                        <div class="pure-controls">
+                            <button type="submit" class="pure-button pure-button-primary">Submit</button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </form>
+</div>
+{% endblock %}
+
 {% block top_left_title %}
 Rewards
 {% endblock %}
@@ -72,25 +137,5 @@ Sessions
     <p>Hours remaining: {{ milestone.hours_remaining }}</p>
     <p>Target End Date: {{ milestone.end_date }}</p>
     </br>
-
-
-    <!-- TEST MODAL CODE -->
-    <!-- Trigger/Open The Modal -->
-    <button id="edit-record-button">TEST Edit Milestone</button>
-
-    <!-- The Modal -->
-    <div id="edit-record-modal" class="modal">
-        <!-- Modal content -->
-        <div class="edit-record-modal-content">
-            <span class="close-modal">&times;</span>
-            <p>Some text in the Modal..</p>
-        </div>
-    </div>
-    <!-- END TEST CODE -->
-
-
-    <form action="{% url 'tracker:milestone edit' goal.id milestone.id %}">
-        <input type="submit" value="Edit your Milestone?" />
-    </form>
 </div>
 {% endblock %}

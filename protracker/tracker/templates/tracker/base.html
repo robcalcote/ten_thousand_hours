@@ -66,7 +66,7 @@
                             </li>
                             {% endif %}
                             <li class="pure-menu-item">
-                                <a href="{% url 'tracker:goal edit' goal.id %}" class="pure-menu-link">Edit Goal</a>
+                                <a href="#" class="pure-menu-link" id="edit-record-button">Edit Current Record (WIP)</a>
                             </li>
                             <li class="pure-menu-item">
                                 <a href="{% url 'tracker:milestone add' goal.id %}" class="pure-menu-link">Add New Milestone</a>
@@ -95,7 +95,18 @@
         </div>
     </div>
 
-    
+    <div>
+        <div id="edit-record-modal" class="modal">
+            <!-- Modal content -->
+            <div class="edit-record-modal-content">
+                <div>
+                    <span class="close-modal">&times;</span>
+                    <h3 class="title-modal">{% block edit_modal_title %}{% endblock %}</h3>
+                </div>
+                {% block edit_modal %}{% endblock %}
+            </div>
+        </div>
+    </div>
 
 
 </body>

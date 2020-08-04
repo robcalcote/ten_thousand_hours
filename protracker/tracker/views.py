@@ -84,9 +84,30 @@ def goal_detail(request, goal_id):
         return render(request, 'tracker/forbidden.html', {})
     goal = get_object_or_404(Goal, pk=goal_id)
     sessions = goal.session_set.order_by('-date')
+    days_remaining = goal.end_date.replace(tzinfo=None) - datetime.datetime.now()
+    if request.method == 'POST':
+        form = GoalEdit(request.POST)
+        if form.is_valid():
+            ## This needs some major editing
+            # goal.end_date is acting strangely - sometimes removing a day
+            goal.description = request.POST['description']
+            goal.hours = request.POST['hours']
+            hours_remaining = decimal.Decimal(request.POST['hours'])
+            sessions = Session.objects.filter(goal=goal)
+            for session in sessions:
+                hours_remaining = hours_remaining - session.hour_count
+            goal.hours_remaining = hours_remaining
+            goal.end_date = datetime.datetime.now() + timedelta(days=int(request.POST['end_date'])+1)
+
+            goal.save()
+            return HttpResponseRedirect(reverse('tracker:goal detail', args=(goal.id,)))
+    else:
+        form = GoalEdit()
     context = {
         'goal': goal,
         'sessions': sessions,
+        'form': form,
+        'days_remaining': days_remaining.days,
     }
     return render(request, 'tracker/goal_detail.html', context)
 
@@ -176,10 +197,31 @@ def milestone_detail(request, goal_id, milestone_id):
         return render(request, 'tracker/forbidden.html', {})
     milestone = get_object_or_404(Milestone, pk=milestone_id, goal=goal_id)
     sessions = milestone.session_set.order_by('-date')
+    days_remaining = milestone.end_date.replace(tzinfo=None) - datetime.datetime.now()
+    if request.method == 'POST':
+        form = MilestoneEdit(request.POST)
+        if form.is_valid():
+            ## This needs some major editing
+            # milestone.end_date is acting strangely - sometimes removing a day
+            milestone.description = request.POST['description']
+            milestone.hours = request.POST['hours']
+            hours_remaining = decimal.Decimal(request.POST['hours'])
+            sessions = Session.objects.filter(milestone=milestone)
+            for session in sessions:
+                hours_remaining = hours_remaining - session.hour_count
+            milestone.hours_remaining = hours_remaining
+            milestone.end_date = datetime.datetime.now() + timedelta(days=int(request.POST['end_date'])+1)
+
+            milestone.save()
+            return HttpResponseRedirect(reverse('tracker:milestone detail', args=(goal.id, milestone.id,)))
+    else:
+        form = GoalEdit()
     context = {
         'goal': milestone.goal,
         'milestone': milestone,
         'sessions': sessions,
+        'form': form,
+        'days_remaining': days_remaining.days,
     }
     return render(request, 'tracker/milestone_detail.html', context)
 
@@ -189,10 +231,20 @@ def reward_detail(request, goal_id, reward_id):
     if goal.user != request.user:
         return render(request, 'tracker/forbidden.html', {})
     reward = get_object_or_404(Reward, pk=reward_id, goal=goal_id)
+    if request.method == 'POST':
+        form = RewardEdit(request.POST)
+        if form.is_valid():
+            reward.milestone = get_object_or_404(Milestone, pk=request.POST['milestone'])
+            reward.description = request.POST['description']
+            reward.save()
+            return HttpResponseRedirect(reverse('tracker:reward detail', args=(goal.id, reward.id,)))
+    else:
+        form = RewardEdit()
     context = {
         'goal': reward.goal,
         'milestone': reward.milestone,
         'reward': reward,
+        'form': form,
     }
     return render(request, 'tracker/reward_detail.html', context)
 
@@ -202,10 +254,22 @@ def session_detail(request, goal_id, session_id):
     if goal.user != request.user:
         return render(request, 'tracker/forbidden.html', {})
     session = get_object_or_404(Session, pk=session_id, goal=goal_id)
+    if request.method == 'POST':
+        form = SessionEdit(request.POST)
+        if form.is_valid():
+            session.milestone = get_object_or_404(Milestone, pk=request.POST['milestone'])
+            session.description = request.POST['description']
+            session.hour_count = request.POST['hour_count']
+            session.difficulty = request.POST['difficulty']
+            session.save()
+            return HttpResponseRedirect(reverse('tracker:session detail', args=(goal.id, session.id,)))
+    else:
+        form = SessionEdit()
     context = {
         'goal': session.goal,
         'milestone': session.milestone,
         'session': session,
+        'form': form,
     }
     return render(request, 'tracker/session_detail.html', context)
 
@@ -317,115 +381,3 @@ def session_add(request, goal_id):
         'form': form,
     }
     return render(request, 'tracker/session_add.html', context)
-
-
-### Record Edit Views
-@login_required
-def goal_edit(request, goal_id):
-    goal = get_object_or_404(Goal, pk=goal_id)
-    if goal.user != request.user:
-        return render(request, 'tracker/forbidden.html', {})
-    days_remaining = goal.end_date.replace(tzinfo=None) - datetime.datetime.now()
-    if request.method == 'POST':
-        form = GoalEdit(request.POST)
-        if form.is_valid():
-            ## This needs some major editing
-            # goal.end_date is acting strangely - sometimes removing a day
-            goal.description = request.POST['description']
-            goal.hours = request.POST['hours']
-            hours_remaining = decimal.Decimal(request.POST['hours'])
-            sessions = Session.objects.filter(goal=goal)
-            for session in sessions:
-                hours_remaining = hours_remaining - session.hour_count
-            goal.hours_remaining = hours_remaining
-            goal.end_date = datetime.datetime.now() + timedelta(days=int(request.POST['end_date'])+1)
-
-            goal.save()
-            return HttpResponseRedirect(reverse('tracker:goal detail', args=(goal.id,)))
-    else:
-        form = GoalEdit()
-    context = {
-        'goal': goal,
-        'form': form,
-        'days_remaining': days_remaining.days,
-    }
-    return render(request, 'tracker/goal_edit.html', context)
-
-@login_required
-def milestone_edit(request, goal_id, milestone_id):
-    goal = get_object_or_404(Goal, pk=goal_id)
-    if goal.user != request.user:
-        return render(request, 'tracker/forbidden.html', {})
-    milestone = get_object_or_404(Milestone, pk=milestone_id)
-    days_remaining = milestone.end_date.replace(tzinfo=None) - datetime.datetime.now()
-    if request.method == 'POST':
-        form = MilestoneEdit(request.POST)
-        if form.is_valid():
-            ## This needs some major editing
-            # milestone.end_date is acting strangely - sometimes removing a day
-            milestone.description = request.POST['description']
-            milestone.hours = request.POST['hours']
-            hours_remaining = decimal.Decimal(request.POST['hours'])
-            sessions = Session.objects.filter(milestone=milestone)
-            for session in sessions:
-                hours_remaining = hours_remaining - session.hour_count
-            milestone.hours_remaining = hours_remaining
-            milestone.end_date = datetime.datetime.now() + timedelta(days=int(request.POST['end_date'])+1)
-
-            milestone.save()
-            return HttpResponseRedirect(reverse('tracker:milestone detail', args=(goal.id, milestone.id,)))
-    else:
-        form = GoalEdit()
-    context = {
-        'goal': goal,
-        'milestone': milestone,
-        'form': form,
-        'days_remaining': days_remaining.days,
-    }
-    return render(request, 'tracker/milestone_edit.html', context)
-
-@login_required
-def reward_edit(request, goal_id, reward_id):
-    goal = get_object_or_404(Goal, pk=goal_id)
-    if goal.user != request.user:
-        return render(request, 'tracker/forbidden.html', {})
-    reward = get_object_or_404(Reward, pk=reward_id)
-    if request.method == 'POST':
-        form = RewardEdit(request.POST)
-        if form.is_valid():
-            reward.milestone = get_object_or_404(Milestone, pk=request.POST['milestone'])
-            reward.description = request.POST['description']
-            reward.save()
-            return HttpResponseRedirect(reverse('tracker:reward detail', args=(goal.id, reward.milestone.id, reward.id,)))
-    else:
-        form = RewardEdit()
-    context = {
-        'goal': goal,
-        'reward': reward,
-        'form': form,
-    }
-    return render(request, 'tracker/reward_edit.html', context)
-
-@login_required
-def session_edit(request, goal_id, session_id):
-    goal = get_object_or_404(Goal, pk=goal_id)
-    if goal.user != request.user:
-        return render(request, 'tracker/forbidden.html', {})
-    session = get_object_or_404(Session, pk=session_id)
-    if request.method == 'POST':
-        form = SessionEdit(request.POST)
-        if form.is_valid():
-            session.milestone = get_object_or_404(Milestone, pk=request.POST['milestone'])
-            session.description = request.POST['description']
-            session.hour_count = request.POST['hour_count']
-            session.difficulty = request.POST['difficulty']
-            session.save()
-            return HttpResponseRedirect(reverse('tracker:session detail', args=(goal.id, session.milestone.id, session.id,)))
-    else:
-        form = SessionEdit()
-    context = {
-        'goal': goal,
-        'session': session,
-        'form': form,
-    }
-    return render(request, 'tracker/session_edit.html', context)

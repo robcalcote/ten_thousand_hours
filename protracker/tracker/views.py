@@ -231,6 +231,9 @@ def reward_detail(request, goal_id, reward_id):
     if goal.user != request.user:
         return render(request, 'tracker/forbidden.html', {})
     reward = get_object_or_404(Reward, pk=reward_id, goal=goal_id)
+    rewarded = reward.rewarded_date.date() < datetime.date.today()
+    percent_complete = (reward.milestone.hours - reward.milestone.hours_remaining) / reward.milestone.hours
+    sessions = reward.milestone.session_set.all().order_by('date')
     if request.method == 'POST':
         form = RewardEdit(request.POST)
         if form.is_valid():
@@ -244,6 +247,9 @@ def reward_detail(request, goal_id, reward_id):
         'goal': reward.goal,
         'milestone': reward.milestone,
         'reward': reward,
+        'rewarded': rewarded,
+        'percent_complete': "{:.2%}".format(percent_complete),
+        'sessions': sessions,
         'form': form,
     }
     return render(request, 'tracker/reward_detail.html', context)

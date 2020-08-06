@@ -1,29 +1,67 @@
 {% extends "tracker/base.html" %}
 
 {% block content %}
-<div id="content-bottom" class="pure-g">
-    {% block chartjs %}{% endblock %}
-</div>
-
-<div  id="content-top">
-    <div class="pure-g top-half-title">
-        <div class="pure-u-1-2 section-title">
-            <h3>{% block top_left_title %}{% endblock %}</h3>
-        </div>
-        <div class="pure-u-1-2 section-title">
-            <h3>{% block top_right_title %}{% endblock %}</h3>
-        </div> 
+    <div id="content-bottom" class="pure-g">
+        {% block chartjs %}{% endblock %}
     </div>
 
-    <div class="pure-g top-half">
-        <div class="pure-u-1-2">
-            {% block top_left_table %}{% endblock %}
+    <div  id="content-top">
+        <div class="pure-g top-half-title">
+            <div class="pure-u-1-2 section-title">
+                <h3>{% block top_left_title %}{% endblock %}</h3>
+            </div>
+            <div class="pure-u-1-2 section-title">
+                <h3>{% block top_right_title %}{% endblock %}</h3>
+            </div> 
         </div>
-        <div class="pure-u-1-2">
-            {% block top_right_table %}{% endblock %}
+
+        <div class="pure-g top-half">
+            <div class="pure-u-1-2">
+                {% block top_left_table %}{% endblock %}
+            </div>
+            <div class="pure-u-1-2">
+                {% block top_right_table %}{% endblock %}
+            </div>
         </div>
     </div>
-</div>
 
+
+    {# These are created on every detail page, but the tables for forms are only filled on pages that use them #}
+    {% block goal_edit_modal %}
+    <div>
+        <div id="goal-edit-modal" class="modal">
+            <div class="edit-record-modal-content">
+                <div>
+                    <span id="goal-edit-close" class="close-modal">&times;</span>
+                    <h3 class="title-modal">{% block goal_edit_modal_form_title %}{% endblock %}</h3>
+                </div>
+                {% block goal_edit_modal_form %}{% endblock %}
+            </div>
+        </div>
+    </div>
+    {% endblock %}
+
+    {% block goal_add_modal %}
+    <div>
+        <div id="goal-add-modal" class="modal">
+            <div class="edit-record-modal-content">
+                <div>
+                    <span id="goal-add-close" class="close-modal">&times;</span>
+                    <h3 class="title-modal">{% block goal_add_modal_form_title %}{% endblock %}</h3>
+                </div>
+                {% block goal_add_modal_form %}{% endblock %}
+            </div>
+        </div>
+    </div>
+    {% endblock %}
+
+    {% block milestone_edit_modal %}{% endblock %}
+    {% block milestone_add_modal %}{% endblock %}
+
+    {% block reward_edit_modal %}{% endblock %}
+    {% block reward_add_modal %}{% endblock %}
+
+    {% block session_edit_modal %}{% endblock %}
+    {% block session_add_modal %}{% endblock %}
 
 {% endblock %}

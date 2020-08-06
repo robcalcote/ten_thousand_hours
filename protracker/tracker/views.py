@@ -260,9 +260,12 @@ def session_detail(request, goal_id, session_id):
     if goal.user != request.user:
         return render(request, 'tracker/forbidden.html', {})
     session = get_object_or_404(Session, pk=session_id, goal=goal_id)
+    
+    ## FORMS - session_edit, session_add
+    # session_edit
     if request.method == 'POST':
-        form = SessionEdit(request.POST)
-        if form.is_valid():
+        form_session_edit = SessionEdit(request.POST)
+        if form_session_edit.is_valid():
             session.milestone = get_object_or_404(Milestone, pk=request.POST['milestone'])
             session.description = request.POST['description']
             session.hour_count = request.POST['hour_count']
@@ -270,12 +273,32 @@ def session_detail(request, goal_id, session_id):
             session.save()
             return HttpResponseRedirect(reverse('tracker:session detail', args=(goal.id, session.id,)))
     else:
-        form = SessionEdit()
+        form_session_edit = SessionEdit()
+    # session_add
+    if request.method == 'POST':
+        form_session_add = SessionAdd(request.POST)
+        if form_session_add.is_valid():
+            desc = request.POST['description']
+            session_hour_count = decimal.Decimal(request.POST['hour_count'])
+            milestone = get_object_or_404(Milestone, pk=request.POST['milestone'])
+            date = datetime.datetime.now()
+            difficulty = request.POST['difficulty']
+            new_session = Session(goal=goal, milestone=milestone, description=desc, date=date, 
+                hour_count=session_hour_count, difficulty=difficulty)
+            new_session.save()
+            goal.hours_remaining = goal.hours_remaining - session_hour_count
+            goal.save()
+            milestone.hours_remaining = milestone.hours_remaining - session_hour_count
+            milestone.save()
+            return HttpResponseRedirect(reverse('tracker:goal detail', args=(goal.id,)))
+    else:
+        form_session_add = SessionAdd()
     context = {
         'goal': session.goal,
         'milestone': session.milestone,
         'session': session,
-        'form': form,
+        'form_session_edit': form_session_edit,
+        'form_session_add': form_session_add,
     }
     return render(request, 'tracker/session_detail.html', context)
 

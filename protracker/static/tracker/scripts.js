@@ -24,33 +24,34 @@ window.onload = function() {
         };
     }
 
-
-
-    // TEST MODAL CODE
     // Get the modal
-    var modal = document.getElementById("edit-record-modal");
+    var goalEditModal = document.getElementById("goal-edit-modal");
+    var goalEditButton = document.getElementById("goal-edit-button");
+    var goalEditClose = document.getElementById("goal-edit-close");
+    var goalAddModal = document.getElementById("goal-add-modal");
+    var goalAddButton = document.getElementById("goal-add-button");
+    var goalAddClose = document.getElementById("goal-add-close");
 
-    // Get the button that opens the modal
-    var btn = document.getElementById("edit-record-button");
-
-    // Get the <span> element that closes the modal
-    var span = document.getElementsByClassName("close-modal")[0];
-
-    // When the user clicks on the button, open the modal
-    btn.onclick = function() {
-    modal.style.display = "block";
+    // When the user clicks on the button, open the corresponding modal
+    goalEditButton.onclick = function() {
+        goalEditModal.style.display = "block";
+    }
+    goalAddButton.onclick = function() {
+        goalAddModal.style.display = "block";
     }
 
-    // When the user clicks on <span> (x), close the modal
-    span.onclick = function() {
-    modal.style.display = "none";
+    // When the user clicks on <span> (x), close current modal
+    goalEditClose.onclick = function() {
+        goalEditModal.style.display = "none";
+    }
+    goalAddClose.onclick = function() {
+        goalAddModal.style.display = "none";
     }
 
     // When the user clicks anywhere outside of the modal, close it
     window.onclick = function(event) {
-    if (event.target == modal) {
-        modal.style.display = "none";
-    }
+        if (event.target == goalEditModal) {goalEditModal.style.display = "none";}
+        if (event.target == goalAddModal) {goalAddModal.style.display = "none";}
     }
 };
 

@@ -1,4 +1,4 @@
-{% extends "tracker/base.html" %}
+{% extends "tracker/base_detail.html" %}
 
 
 {% block header %}
@@ -7,6 +7,93 @@
 {% block subheader %}
     {{ session.date }}
 {% endblock %}
+
+{% block top_left_title %}
+Goal
+{% endblock %}
+
+{% block top_right_title %}
+Milestone
+{% endblock %}
+
+{% block top_left_table %}
+<div id="goal-list">
+    <table class="pure-table pure-table-striped">
+        <tbody>
+            <tr>
+                <td>Description</td>
+                <td><a href="{% url 'tracker:goal detail' goal.id %}">{{ goal.description }}</a></td>
+            </tr>
+            <tr>
+                <td>Total Hours in Goal</td>
+                <td>{{ goal.hours }}</td>
+            </tr>
+            <tr>
+                <td>Hours Remaining</td>
+                <td>{{ goal.hours_remaining }}</td>
+            </tr>
+            <tr>
+                <td>Percent Complete</td>
+                <td>{{ percent_complete }}</td>
+            </tr>
+            <tr>
+                <td>Achieved Date</td>
+                <td>{{ goal.achieved_date }}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+{% endblock %}
+
+{% block top_right_table %}
+<div id="milestone-list">
+    <table class="pure-table pure-table-striped">
+        <tbody>
+            <tr>
+                <td>Description</td>
+                <td><a href="{% url 'tracker:milestone detail' goal.id milestone.id %}">{{ milestone.description }}</a></td>
+            </tr>
+            <tr>
+                <td>Total Hours in Milestone</td>
+                <td>{{ milestone.hours }}</td>
+            </tr>
+            <tr>
+                <td>Hours Remaining</td>
+                <td>{{ milestone.hours_remaining }}</td>
+            </tr>
+            <tr>
+                <td>Percent Complete</td>
+                <td>{{ percent_complete }}</td>
+            </tr>
+            <tr>
+                <td>Achieved Date</td>
+                <td>{{ milestone.achieved_date }}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+{% endblock %}
+
+{% load static %}
+{% block chartjs %}
+<div class="pure-u-1-1">
+    <p>Description: {{ session.description }}</p>
+    <p>Total hours: {{ session.hour_count }}</p>
+    <p>Difficulty: {{ session.get_difficulty_display }}</p>
+    <p>Date: {{ session.date }}</p>
+</div>
+{% endblock %}
+
+
+
+
+{% comment %} 
+
+FORMS IN THE FOLLOWING ORDER:
+session_edit
+session_add
+
+{% endcomment %}
 
 {% block edit_modal_title %}
 Edit Session: {{ session.date }}
@@ -95,11 +182,89 @@ Edit Session: {{ session.date }}
 </div>
 {% endblock %}
 
-{% block content %}
-<p>{{ session.description }}</p>
-</br>
-<p>Total hours in your session: {{ session.hour_count }}</p>
-</br>
-<p>difficulty level of your session: {{ session.get_difficulty_display }}</p>
-</br>
+{% block edit_modal_title %}
+Edit Session: {{ session.date }}
+{% endblock %}
+
+{% block edit_modal %}
+{% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+<div>
+    <form action="{% url 'tracker:session detail' goal.id session.id %}" method="post" class="pure-form pure-form-aligned">
+        {% csrf_token %}
+    
+        <table class="pure-table">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>Original Value</th>
+                    <th>New Value</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th>
+                        <label for="id_description">Session Description:</label>
+                    </th>
+                    <td>{{ session.description }}</td>
+                    <td>
+                        <div class="pure-control-group">
+                            <textarea name="description" cols="40" rows="10" required="" id="id_description">{{ session.description }}</textarea>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <th>
+                        <label for="id_hour_count">Session Hours:</label>
+                    </th>
+                    <td>{{ session.hour_count }}</td>
+                    <td>
+                        <div class="pure-control-group">
+                            <input type="number" name="hour_count" step="any" required="" id="id_hour_count" value="{{ session.hour_count }}">
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <th>
+                        <label for="id_difficulty">Session Difficulty:</label>
+                    </th>
+                    <td>{{ session.get_difficulty_display }}</td>
+                    <td>
+                        <div class="pure-control-group">
+                            <select name="difficulty" required id="id_difficulty">
+                                <option value="{{ session.difficulty }}">{{ session.get_difficulty_display }}</option>
+                                <option value="1">Very Easy</option>
+                                <option value="2">Easy</option>
+                                <option value="3">Moderate</option>
+                                <option value="4">Hard</option>
+                                <option value="5">Very Hard</option>
+                            </select>                    
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <th>
+                        <label for="id_end_date">Selected Milestone:</label>
+                    </th>
+                    <td>{{ session.milestone.description }}</td>
+                    <td>
+                        <div class="pure-control-group">
+                            <select name="milestone" required id=id_milestone value="{{ reward.milestone.id }}">
+                                {% for milestone in goal.milestone_set.all %}
+                                    <option value="{{ milestone.id }}">{{ milestone.description }}</option>
+                                {% endfor %}
+                            </select>   
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <th></th><td></td><td>
+                        <div class="pure-controls">
+                            <button type="submit" class="pure-button pure-button-primary">Submit</button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </form>
+</div>
 {% endblock %}

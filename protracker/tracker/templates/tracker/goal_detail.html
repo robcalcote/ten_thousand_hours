@@ -158,7 +158,7 @@ Edit Goal: {{ goal.description }}
 
 {% block goal_edit_modal_form %}
 {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
-<div id="edit_page">
+<div id="edit_goal">
     <form action="{% url 'tracker:goal detail' goal.id %}" method="post" class="pure-form pure-form-aligned">
         {% csrf_token %}
         <table class="pure-table">
@@ -223,59 +223,20 @@ Add Goal
 {% block goal_add_modal_form %}
 {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
 <div id="edit_page">
-    <form action="{% url 'tracker:goal detail' goal.id %}" method="post" class="pure-form pure-form-aligned">
+    <form action="{% url 'tracker:goal add' %}" method="post" class="pure-form pure-form-aligned">
         {% csrf_token %}
-        <table class="pure-table">
-            <thead>
-                <tr>
-                    <th></th>
-                    <th>Original Value</th>
-                    <th>New Value</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <th>
-                        <label for="id_description">Goal Description:</label>
-                    </th>
-                    <td>{{ goal.description }}</td>
-                    <td>
-                        <div class="pure-control-group">
-                            <textarea name="description" cols="40" rows="10" required="" id="id_description">{{ goal.description }}</textarea>
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <th>
-                        <label for="id_hours">Hours in Goal:</label>
-                    </th>
-                    <td>{{ goal.hours }}</td>
-                    <td>
-                        <div class="pure-control-group">
-                            <input type="number" name="hours" min="0" max="99999" required="" id="id_hours" value="{{ goal.hours }}">
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <th>
-                        <label for="id_end_date">Days Remaining:</label>
-                    </th>
-                    <td>{{ days_remaining }}</td>
-                    <td>
-                        <div class="pure-control-group">
-                            <input type="number" name="end_date" min="0" max="9999" required="" id="id_end_date" value="{{ days_remaining }}">
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td></td><td></td><td>
-                        <div class="pure-controls">
-                            <button type="submit" class="pure-button pure-button-primary">Submit</button>
-                        </div>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+            <div class="pure-control-group">
+                {{ form.description }}
+            </div>
+            <div class="pure-control-group">
+                {{ form.hours }}
+            </div>
+            <div class="pure-control-group">
+                {{ form.end_date }}
+            </div>
+            <div class="pure-controls">
+                <button type="submit" class="pure-button pure-button-primary">Submit</button>
+            </div>
     </form>
 </div>
 {% endblock %}

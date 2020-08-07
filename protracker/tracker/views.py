@@ -234,48 +234,20 @@ def reward_detail(request, goal_id, reward_id):
     rewarded = reward.rewarded_date.date() < datetime.date.today()
     percent_complete = (reward.milestone.hours - reward.milestone.hours_remaining) / reward.milestone.hours
     sessions = reward.milestone.session_set.all().order_by('date')
-    if request.method == 'POST':
-        form = RewardEdit(request.POST)
-        if form.is_valid():
+
+    ## FORMS - reward_edit, session_add
+    # reward_edit
+    if "reward_edit_submit" in request.POST:
+        form_reward_edit = RewardEdit(request.POST)
+        if form_reward_edit.is_valid():
             reward.milestone = get_object_or_404(Milestone, pk=request.POST['milestone'])
             reward.description = request.POST['description']
             reward.save()
             return HttpResponseRedirect(reverse('tracker:reward detail', args=(goal.id, reward.id,)))
     else:
-        form = RewardEdit()
-    context = {
-        'goal': reward.goal,
-        'milestone': reward.milestone,
-        'reward': reward,
-        'rewarded': rewarded,
-        'percent_complete': "{:.2%}".format(percent_complete),
-        'sessions': sessions,
-        'form': form,
-    }
-    return render(request, 'tracker/reward_detail.html', context)
-
-@login_required
-def session_detail(request, goal_id, session_id):
-    goal = get_object_or_404(Goal, pk=goal_id)
-    if goal.user != request.user:
-        return render(request, 'tracker/forbidden.html', {})
-    session = get_object_or_404(Session, pk=session_id, goal=goal_id)
-    
-    ## FORMS - session_edit, session_add
-    # session_edit
-    if request.method == 'POST':
-        form_session_edit = SessionEdit(request.POST)
-        if form_session_edit.is_valid():
-            session.milestone = get_object_or_404(Milestone, pk=request.POST['milestone'])
-            session.description = request.POST['description']
-            session.hour_count = request.POST['hour_count']
-            session.difficulty = request.POST['difficulty']
-            session.save()
-            return HttpResponseRedirect(reverse('tracker:session detail', args=(goal.id, session.id,)))
-    else:
-        form_session_edit = SessionEdit()
+        form_reward_edit = RewardEdit()
     # session_add
-    if request.method == 'POST':
+    if "session_add_submit" in request.POST:
         form_session_add = SessionAdd(request.POST)
         if form_session_add.is_valid():
             desc = request.POST['description']
@@ -290,15 +262,46 @@ def session_detail(request, goal_id, session_id):
             goal.save()
             milestone.hours_remaining = milestone.hours_remaining - session_hour_count
             milestone.save()
-            return HttpResponseRedirect(reverse('tracker:goal detail', args=(goal.id,)))
+            return HttpResponseRedirect(reverse('tracker:reward detail', args=(goal.id, reward.id,)))
     else:
         form_session_add = SessionAdd()
+    context = {
+        'goal': reward.goal,
+        'milestone': reward.milestone,
+        'reward': reward,
+        'rewarded': rewarded,
+        'percent_complete': "{:.2%}".format(percent_complete),
+        'sessions': sessions,
+        'form_reward_edit': form_reward_edit,
+        'form_session_add': form_session_add,
+    }
+    return render(request, 'tracker/reward_detail.html', context)
+
+@login_required
+def session_detail(request, goal_id, session_id):
+    goal = get_object_or_404(Goal, pk=goal_id)
+    if goal.user != request.user:
+        return render(request, 'tracker/forbidden.html', {})
+    session = get_object_or_404(Session, pk=session_id, goal=goal_id)
+    
+    ## FORMS - session_edit
+    # session_edit
+    if "session_edit_submit" in request.POST:
+        form_session_edit = SessionEdit(request.POST)
+        if form_session_edit.is_valid():
+            session.milestone = get_object_or_404(Milestone, pk=request.POST['milestone'])
+            session.description = request.POST['description']
+            session.hour_count = request.POST['hour_count']
+            session.difficulty = request.POST['difficulty']
+            session.save()
+            return HttpResponseRedirect(reverse('tracker:session detail', args=(goal.id, session.id,)))
+    else:
+        form_session_edit = SessionEdit()
     context = {
         'goal': session.goal,
         'milestone': session.milestone,
         'session': session,
         'form_session_edit': form_session_edit,
-        'form_session_add': form_session_add,
     }
     return render(request, 'tracker/session_detail.html', context)
 

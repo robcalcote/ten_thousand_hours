@@ -55,13 +55,85 @@
     </div>
     {% endblock %}
 
-    {% block milestone_edit_modal %}{% endblock %}
-    {% block milestone_add_modal %}{% endblock %}
+    {% block milestone_edit_modal %}
+    <div>
+        <div id="milestone-edit-modal" class="modal">
+            <div class="edit-record-modal-content">
+                <div>
+                    <span id="milestone-edit-close" class="close-modal">&times;</span>
+                    <h3 class="title-modal">{% block milestone_edit_modal_form_title %}{% endblock %}</h3>
+                </div>
+                {% block milestone_edit_modal_form %}{% endblock %}
+            </div>
+        </div>
+    </div>
+    {% endblock %}
+    {% block milestone_add_modal %}
+    <div>
+        <div id="milestone-add-modal" class="modal">
+            <div class="edit-record-modal-content">
+                <div>
+                    <span id="milestone-add-close" class="close-modal">&times;</span>
+                    <h3 class="title-modal">{% block milestone_add_modal_form_title %}{% endblock %}</h3>
+                </div>
+                {% block milestone_add_modal_form %}{% endblock %}
+            </div>
+        </div>
+    </div>
+    {% endblock %}
 
-    {% block reward_edit_modal %}{% endblock %}
-    {% block reward_add_modal %}{% endblock %}
+    {% block reward_edit_modal %}
+    <div>
+        <div id="reward-edit-modal" class="modal">
+            <div class="edit-record-modal-content">
+                <div>
+                    <span id="reward-edit-close" class="close-modal">&times;</span>
+                    <h3 class="title-modal">{% block reward_edit_modal_form_title %}{% endblock %}</h3>
+                </div>
+                {% block reward_edit_modal_form %}{% endblock %}
+            </div>
+        </div>
+    </div>
+    {% endblock %}
+    {% block reward_add_modal %}
+    <div>
+        <div id="reward-add-modal" class="modal">
+            <div class="edit-record-modal-content">
+                <div>
+                    <span id="reward-add-close" class="close-modal">&times;</span>
+                    <h3 class="title-modal">{% block reward_add_modal_form_title %}{% endblock %}</h3>
+                </div>
+                {% block reward_add_modal_form %}{% endblock %}
+            </div>
+        </div>
+    </div>
+    {% endblock %}
 
-    {% block session_edit_modal %}{% endblock %}
-    {% block session_add_modal %}{% endblock %}
+    {% block session_edit_modal %}
+    <div>
+        <div id="session-edit-modal" class="modal">
+            <div class="edit-record-modal-content">
+                <div>
+                    <span id="session-edit-close" class="close-modal">&times;</span>
+                    <h3 class="title-modal">{% block session_edit_modal_form_title %}{% endblock %}</h3>
+                </div>
+                {% block session_edit_modal_form %}{% endblock %}
+            </div>
+        </div>
+    </div>
+    {% endblock %}
+    {% block session_add_modal %}
+    <div>
+        <div id="session-add-modal" class="modal">
+            <div class="edit-record-modal-content">
+                <div>
+                    <span id="session-add-close" class="close-modal">&times;</span>
+                    <h3 class="title-modal">{% block session_add_modal_form_title %}{% endblock %}</h3>
+                </div>
+                {% block session_add_modal_form %}{% endblock %}
+            </div>
+        </div>
+    </div>
+    {% endblock %}
 
 {% endblock %}

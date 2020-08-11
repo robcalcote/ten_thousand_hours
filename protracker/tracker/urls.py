@@ -22,12 +22,6 @@ urlpatterns = [
     path('<int:goal_id>/reward_detail/<int:reward_id>/', views.reward_detail, name='reward detail'),
     path('<int:goal_id>/session_detail/<int:session_id>/', views.session_detail, name='session detail'),
 
-    #record add urls
-    path('goal_add/', views.goal_add, name='goal add'),
-    path('<int:goal_id>/milestone_add/', views.milestone_add, name='milestone add'),
-    path('<int:goal_id>/reward_add/', views.reward_add, name='reward add'),
-    path('<int:goal_id>/session_add/', views.session_add, name='session add'),
-
     # Testing REST interface
     path('api/graph/data/<int:goal_id>/', GraphData.as_view())
 ]

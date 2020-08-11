@@ -18,6 +18,15 @@
             <div class="header">
                 <h1>{% block header %}{% endblock %}</h1>
                 <h2 class="brand-tagline">{% block subheader %}{% endblock %}</h2>
+                {% if '/goal_detail/' in request.path %}
+                    <a class="pure-button pure-button-primary" id="goal-edit-button">Edit</a>
+                {% elif '/milestone_detail/' in request.path %}
+                    <a class="pure-button pure-button-primary" id="milestone-edit-button">Edit</a>
+                {% elif '/reward_detail/' in request.path %}
+                    <a class="pure-button pure-button-primary" id="reward-edit-button">Edit</a>
+                {% elif '/session_detail/' in request.path %}
+                    <a class="pure-button pure-button-primary" id="session-edit-button">Edit</a>
+                {% endif %}
             </div>
             <div class="pure-menu side-nav-menu nav-menu">
                 {% block sidebar %}
@@ -66,37 +75,16 @@
                             </li>
                             {% endif %}
                             <li class="pure-menu-item">
-                                <a href="#" class="pure-menu-link" id="goal-edit-button">Edit Goal (WIP)</a>
+                                <a class="pure-menu-link" id="goal-add-button">Add New Goal (WIP)</a>
                             </li>
                             <li class="pure-menu-item">
-                                <a href="#" class="pure-menu-link" id="goal-add-button">Add New Goal (WIP)</a>
+                                <a class="pure-menu-link" id="milestone-add-button">Add New Milestone (WIP)</a>
                             </li>
                             <li class="pure-menu-item">
-                                <a href="#" class="pure-menu-link" id="milestone-edit-button">Edit Milestone (WIP)</a>
+                                <a class="pure-menu-link" id="reward-add-button">Add New Reward (WIP)</a>
                             </li>
                             <li class="pure-menu-item">
-                                <a href="#" class="pure-menu-link" id="milestone-add-button">Add New Milestone (WIP)</a>
-                            </li>
-                            <li class="pure-menu-item">
-                                <a href="#" class="pure-menu-link" id="reward-edit-button">Edit Reward (WIP)</a>
-                            </li>
-                            <li class="pure-menu-item">
-                                <a href="#" class="pure-menu-link" id="reward-add-button">Add New Reward (WIP)</a>
-                            </li>
-                            <li class="pure-menu-item">
-                                <a href="#" class="pure-menu-link" id="session-edit-button">Edit Session (WIP)</a>
-                            </li>
-                            <li class="pure-menu-item">
-                                <a href="#" class="pure-menu-link" id="session-add-button">Add New Session (WIP)</a>
-                            </li>
-                            <li class="pure-menu-item">
-                                <a href="{% url 'tracker:milestone add' goal.id %}" class="pure-menu-link">Add New Milestone</a>
-                            </li>
-                            <li class="pure-menu-item">
-                                <a href="{% url 'tracker:reward add' goal.id %}" class="pure-menu-link">Add New Reward</a>
-                            </li>                
-                            <li class="pure-menu-item">
-                                <a href="{% url 'tracker:session add' goal.id %}" class="pure-menu-link">Add New Session</a>
+                                <a class="pure-menu-link" id="session-add-button">Add New Session (WIP)</a>
                             </li>
                         </ul>
                     </li>

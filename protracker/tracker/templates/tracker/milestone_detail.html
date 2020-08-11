@@ -8,71 +8,6 @@ Milestone
 {{ milestone.description }}
 {% endblock %}
 
-{% block edit_modal_title %}
-Edit Milestone: {{ milestone.description }}
-{% endblock %}
-
-{% block edit_modal %}
-{% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
-<div>
-    <form action="{% url 'tracker:milestone detail' goal.id milestone.id %}" method="post" class="pure-form pure-form-aligned">
-        {% csrf_token %}
-
-        <table class="pure-table">
-            <thead>
-                <tr>
-                    <th></th>
-                    <th>Original Value</th>
-                    <th>New Value</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <th>
-                        <label for="id_description">Milestone Description:</label>
-                    </th>
-                    <td>{{ milestone.description }}</td>
-                    <td>
-                        <div class="pure-control-group">
-                            <textarea name="description" cols="40" rows="10" required="" id="id_description">{{ milestone.description }}</textarea>            
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <th>
-                        <label for="id_hours">Hours in Milestone:</label>
-                    </th>
-                    <td>{{ milestone.hours }}</td>
-                    <td>
-                        <div class="pure-control-group">
-                            <input type="number" name="hours" min="0" max="99999" required="" id="id_hours" value="{{ milestone.hours }}">
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <th>
-                        <label for="id_end_date">Days Remaining:</label>
-                    </th>
-                    <td>{{ days_remaining }}</td>
-                    <td>
-                        <div class="pure-control-group">
-                            <input type="number" name="end_date" min="0" max="9999" required="" id="id_end_date" value="{{ days_remaining }}">
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <th></th><td></td><td>
-                        <div class="pure-controls">
-                            <button type="submit" class="pure-button pure-button-primary">Submit</button>
-                        </div>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </form>
-</div>
-{% endblock %}
-
 {% block top_left_title %}
 Rewards
 {% endblock %}
@@ -137,5 +72,144 @@ Sessions
     <p>Hours remaining: {{ milestone.hours_remaining }}</p>
     <p>Target End Date: {{ milestone.end_date }}</p>
     </br>
+</div>
+{% endblock %}
+
+{% comment %} 
+FORMS IN THE FOLLOWING ORDER:
+milestone_edit
+reward_add
+session_add
+{% endcomment %}
+
+{% block milestone_edit_modal_form_title %}
+Edit Milestone: {{ milestone.description }}
+{% endblock %}
+
+{% block milestone_edit_modal_form %}
+{% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+<div>
+    <form action="{% url 'tracker:milestone detail' goal.id milestone.id %}" method="post" class="pure-form pure-form-aligned">
+        {% csrf_token %}
+
+        <table class="pure-table">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>Original Value</th>
+                    <th>New Value</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th>
+                        <label for="id_description">Milestone Description:</label>
+                    </th>
+                    <td>{{ milestone.description }}</td>
+                    <td>
+                        <div class="pure-control-group">
+                            <textarea name="description" cols="40" rows="10" required="" id="id_description">{{ milestone.description }}</textarea>            
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <th>
+                        <label for="id_hours">Hours in Milestone:</label>
+                    </th>
+                    <td>{{ milestone.hours }}</td>
+                    <td>
+                        <div class="pure-control-group">
+                            <input type="number" name="hours" min="0" max="99999" required="" id="id_hours" value="{{ milestone.hours }}">
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <th>
+                        <label for="id_end_date">Days Remaining:</label>
+                    </th>
+                    <td>{{ days_remaining }}</td>
+                    <td>
+                        <div class="pure-control-group">
+                            <input type="number" name="end_date" min="0" max="9999" required="" id="id_end_date" value="{{ days_remaining }}">
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <th></th><td></td><td>
+                        <div class="pure-controls">
+                            <button type="submit" name="milestone_edit_submit" class="pure-button pure-button-primary">Submit</button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </form>
+</div>
+{% endblock %}
+
+{% block reward_add_modal_form_title %}
+Add a New Reward
+{% endblock %}
+
+{% block reward_add_modal_form %}
+{% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+<div>
+    <form action="{% url 'tracker:milestone detail' goal.id milestone.id %}" method="post" class="pure-form pure-form-aligned">
+        {% csrf_token %}
+            <div class="pure-control-group">
+                {{ form_reward_add.description }}
+            </div>
+            <div class="pure-control-group">
+                <select name="milestone" required id="id_milestone">
+                        <option value="">Select Milestone</option>
+                    {% for milestone in goal.milestone_set.all %}
+                        <option value="{{ milestone.id }}">{{ milestone.description }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="pure-controls">
+                <button type="submit" name="reward_add_submit" class="pure-button pure-button-primary">Submit</button>
+            </div>
+    </form>
+</div>
+{% endblock %}
+
+{% block session_add_modal_form_title %}
+Add a New Session
+{% endblock %}
+
+{% block session_add_modal_form %}
+{% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+<div>
+    <form action="{% url 'tracker:milestone detail' goal.id milestone.id %}" method="post" class="pure-form pure-form-aligned">
+        {% csrf_token %}
+            <div class="pure-control-group">
+                {{ form_session_add.description }}
+            </div>
+            <div class="pure-control-group">
+                {{ form_session_add.hour_count }}
+            </div>
+            <div class="pure-control-group">
+                <select name="difficulty" required id="id_difficulty">
+                    <option value="">Select Difficulty Level</option>
+                    <option value="1">Very Easy</option>
+                    <option value="2">Easy</option>
+                    <option value="3">Moderate</option>
+                    <option value="4">Hard</option>
+                    <option value="5">Very Hard</option>
+                </select>
+            </div>
+            <div class="pure-control-group">
+                <select name="milestone" required id="id_milestone">
+                        <option value="">Select Milestone</option>
+                    {% for milestone in goal.milestone_set.all %}
+                        <option value="{{ milestone.id }}">{{ milestone.description }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="pure-controls">
+                <button type="submit" name="session_add_submit" class="pure-button pure-button-primary">Submit</button>
+            </div>
+    </form>
 </div>
 {% endblock %}

@@ -60,7 +60,7 @@ class GoalAdd(forms.Form):
 
 class MilestoneAdd(forms.Form):
     description = forms.CharField(label='description of milestone', widget=forms.Textarea(attrs={'placeholder' : 'Milestone Description'}))
-    hours = forms.IntegerField(label='amount of hours in milestone', min_value=0, max_value=9999, widget=forms.NumberInput(attrs={'placeholder' : 'Milestone Description'}))
+    hours = forms.IntegerField(label='amount of hours in milestone', min_value=0, max_value=9999, widget=forms.NumberInput(attrs={'placeholder' : 'Number of Hours'}))
     end_date = forms.IntegerField(label='in how many days do you want to achieve your milestone?', min_value=0, max_value=9999, widget=forms.NumberInput(attrs={'placeholder': 'Number of Days'}))
 
 class RewardAdd(forms.Form):

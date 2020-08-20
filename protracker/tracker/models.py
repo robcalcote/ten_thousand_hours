@@ -9,6 +9,8 @@ class Goal(models.Model):
     description = models.TextField('description of goal')
     hours = models.SmallIntegerField('amount of hours in goal')
     hours_remaining = models.DecimalField('hours remaining', max_digits=10, decimal_places=2)
+    percent_complete = models.DecimalField('percentage complete', max_digits=6, decimal_places=3, null=True)
+    percent_remaining = models.DecimalField('percentage remaining', max_digits=6, decimal_places=3, null=True)
     created_date = models.DateTimeField('date created')
     end_date = models.DateTimeField('end date', null=True)
     achieved_date = models.DateTimeField('date achieved', null=True)

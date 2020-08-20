@@ -208,3 +208,25 @@ th {
     text-decoration: none;
     cursor: pointer;
 }
+
+/* Dashboard styling */
+.grid {
+    display: flex;                       /* establish flex container */
+    flex-wrap: wrap;                     /* enable flex items to wrap */
+    justify-content: space-around;
+    height: 30%;
+}
+.cell {
+    border-radius: 20px;
+    flex: 0 0 29%;                       /* don't grow, don't shrink, width */
+    margin: 0 2% 0 2%;
+    height: 50px;
+    background-color: lightgrey;
+    padding: 25px;
+    height: 100%;
+    align-self: center;
+    justify-self: center;
+}
+
+/* Donut Chart CSS :) */
+

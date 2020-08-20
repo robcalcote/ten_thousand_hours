@@ -68,11 +68,18 @@ def dashboard(request):
     all_milestones = Milestone.objects.filter(goal__user=user)
     all_rewards = Reward.objects.filter(goal__user=user)
     all_sessions = Session.objects.filter(goal__user=user)
+    remainder = all_goals.count() % 3
+    add = 0
+    if remainder == 1:
+        add = 2
+    elif remainder == 2:
+        add = 1
     context = {
         'all_goals': all_goals,
         'all_milestones': all_milestones,
         'all_rewards': all_rewards,
         'all_sessions': all_sessions,
+        'add': add,
     }
     return render(request, 'tracker/dashboard.html', context)
 

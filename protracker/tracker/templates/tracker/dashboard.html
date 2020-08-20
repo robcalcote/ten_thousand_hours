@@ -1,4 +1,5 @@
 {% extends "tracker/base.html" %}
+{% load mathfilters %}
 
 {% block header %}
 {{ user.first_name }}'s Dashboard
@@ -6,51 +7,76 @@
 
 {% block content %}
 
+<style>
+.item {
+    position: relative;
+    float: left;
+}
 
-<h2>GOALS:</h2>
-{% if all_goals %}
-    <ul>
-    {% for goal in all_goals %}
-        <li><a href="{% url 'tracker:goal detail' goal.id %}">{{ goal.description }}</a></li>
-    {% endfor %}
-    </ul>
-{% else %}
-    <p>No goals are available.</p>
-{% endif %}
+.item h4 {
+    text-align:center;
+    position: absolute;
+    line-height: 125px;
+    width: 100%;
+}
 
-<h2>MILESTONES:</h2>
-{% if all_milestones %}
-    <ul>
-    {% for milestone in all_milestones %}
-        <li><a href="{% url 'tracker:milestone detail' milestone.goal.id milestone.id %}">{{ milestone.description }}</a></li>
-    {% endfor %}
-    </ul>
-{% else %}
-    <p>No milestones are available.</p>
-{% endif %}
+svg {
+   -webkit-transform: rotate(-90deg);
+    transform: rotate(-90deg);
+}
 
-<h2>REWARDS:</h2>
-{% if all_rewards %}
-    <ul>
-    {% for reward in all_rewards %}
-        <li><a href="{% url 'tracker:reward detail' reward.goal.id reward.id %}">{{ reward.description }}</a></li>
-    {% endfor %}
-    </ul>
-{% else %}
-    <p>No rewards are available.</p>
-{% endif %}
+.circle_animation {
+  stroke-dasharray: 440; /* this value is the pixel circumference of the circle */
+  stroke-dashoffset: 440;
+}
 
-<h2>SESSIONS:</h2>
-{% if all_sessions %}
-<ul>
-{% for session in all_sessions %}
-    <li><a href="{% url 'tracker:session detail' session.goal.id session.id %}">{{ session.description }}</a></li>
+{% for goal in all_goals %}
+.goal-id-{{ goal.id }} .circle_animation {
+    -webkit-animation: goal-id-{{ goal.id }} 1s ease-out forwards;
+    animation: goal-id-{{ goal.id }} 1s ease-out forwards;
+}
+
+@-webkit-keyframes goal-id-{{ goal.id }} {
+  to {
+    {% with slice=goal.percent_complete|mul:4.40 %}
+        stroke-dashoffset: {{ slice|sub:440|abs }};
+    {% endwith %}
+  }
+}
+@keyframes goal-id-{{ goal.id }} {
+  to {
+    {% with slice=goal.percent_complete|mul:4.40 %}
+        stroke-dashoffset: {{ slice|sub:440|abs }};
+    {% endwith %}
+  }
+}
 {% endfor %}
-</ul>
-{% else %}
-<p>No sessions are available.</p>
-{% endif %}
+</style>
 
+{% if all_goals %}
+<div class="grid">
+    {% for goal in all_goals %}
+    <div class="cell">{{ goal.description }}
+        <div class="item goal-id-{{ goal.id }}">
+            <h4>{{ goal.percent_complete }}%</h4>
+            <svg width="160" height="160" xmlns="http://www.w3.org/2000/svg">
+            <g>
+            <circle class="circle_animation" r="69.85699" cy="81" cx="81" stroke-width="15" stroke="#32cd32" fill="none"/>
+            </g>
+            </svg>
+        </div>
+    </div>
+    {% endfor %}
+    {% if add == 2 %}
+    <div class="cell"></div>
+    <div class="cell"></div>
+    {% elif add == 1 %}
+    <div class="cell"></div>
+    {% endif %}
+</div>
+{% else %}
+<div>get some goals button</div>
+{% endif %}
 
 
 

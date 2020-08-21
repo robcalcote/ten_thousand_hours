@@ -74,11 +74,31 @@ def dashboard(request):
         add = 2
     elif remainder == 2:
         add = 1
+        
+    ## FORMS - goal_edit, milestone_add, reward_add, session_add
+    # milestone_add
+    if "goal_add_submit" in request.POST:
+        form_goal_add = GoalAdd(request.POST)
+        if form_goal_add.is_valid():
+            user = request.user
+            desc = request.POST['description']
+            hours = request.POST['hours']
+            hours_remaining = request.POST['hours']
+            created_date = datetime.datetime.now()
+            end_date = created_date + timedelta(days=int(request.POST['end_date']))
+            achieved_date = None
+            new_goal = Goal(user=user, description=desc, hours=hours, hours_remaining=hours_remaining,
+                created_date=created_date, end_date=end_date, achieved_date=achieved_date)
+            new_goal.save()
+            return HttpResponseRedirect(reverse('tracker:dashboard', args=()))
+    else:
+        form_goal_add = GoalAdd()
     context = {
         'all_goals': all_goals,
         'all_milestones': all_milestones,
         'all_rewards': all_rewards,
         'all_sessions': all_sessions,
+        'form_goal_add': form_goal_add,
         'add': add,
     }
     return render(request, 'tracker/dashboard.html', context)

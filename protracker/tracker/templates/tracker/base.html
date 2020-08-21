@@ -18,7 +18,7 @@
         <div class="left-bar pure-u-1-4">
             <div class="header">
                 <h1>{% block header %}{% endblock %}</h1>
-                <h2 class="brand-tagline">{% block subheader %}{% endblock %}</h2>
+                <h3 class="brand-tagline">{% block subheader %}{% endblock %}</h2>
                 {% if '/goal_detail/' in request.path %}
                     <a class="pure-button pure-button-primary" id="goal-edit-button">Edit</a>
                 {% elif '/milestone_detail/' in request.path %}
@@ -34,16 +34,16 @@
                 {% if request.user.is_authenticated == True %}
                 <span class="pure-menu-heading">Main Menu</span>
                 <ul class="pure-menu-list">
-                    {% if request.path == '/tracker/dashboard/' %}
-                    <li class="pure-menu-item pure-menu-disabled">Viewing Your Dashboard</li>
-                    {% else %}
+                    {% if request.path != '/tracker/dashboard/' %}
                     <li class="pure-menu-item">
                         <a href="{% url 'tracker:dashboard' %}" class="pure-menu-link">Return to Dashboard</a>
                     </li>
                     {% endif %}
+                    {% if request.path == '/tracker/dashboard/' %}
                     <li class="pure-menu-item">
                         <a class="pure-menu-link" id="goal-add-button">Add New Goal</a>
                     </li>
+                    {% endif %}
                     <li class="pure-menu-item pure-menu-has-children pure-menu-allow-hover">
                         <a href="#" id="menuLink1" class="pure-menu-link">Profile</a>
                         <ul class="pure-menu-children">
@@ -107,7 +107,19 @@
 
     {# These are the form templates - to be inherited by base_detail and base_detail will populate all forms #}
     {% block goal_edit_modal %}{% endblock %}
-    {% block goal_add_modal %}{% endblock %}
+    {% block goal_add_modal %}
+    <div>
+        <div id="goal-add-modal" class="modal">
+            <div class="edit-record-modal-content">
+                <div>
+                    <span id="goal-add-close" class="close-modal">&times;</span>
+                    <h3 class="title-modal">{% block goal_add_modal_form_title %}{% endblock %}</h3>
+                </div>
+                {% block goal_add_modal_form %}{% endblock %}
+            </div>
+        </div>
+    </div>
+    {% endblock %}
 
     {% block milestone_edit_modal %}{% endblock %}
     {% block milestone_add_modal %}{% endblock %}

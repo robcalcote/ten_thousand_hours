@@ -124,7 +124,11 @@ Edit Reward: {{ reward.description }}
                         <div class="pure-control-group">
                             <select name="milestone" required id=id_milestone value="{{ reward.milestone.id }}">
                                 {% for milestone in goal.milestone_set.all %}
-                                    <option value="{{ milestone.id }}">{{ milestone.description }}</option>
+                                    {% if milestone.id != reward.milestone.id %}
+                                        <option value="{{ milestone.id }}">{{ milestone.description }}</option>
+                                    {% else %}
+                                        <option value="{{ milestone.id }}" selected="selected">{{ milestone.description }}</option>
+                                    {% endif %}
                                 {% endfor %}
                             </select>     
                         </div>

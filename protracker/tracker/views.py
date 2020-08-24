@@ -5,9 +5,10 @@ from django.views import generic
 from django.contrib.auth import authenticate, login, logout, get_user_model
 from django.contrib.auth.decorators import login_required
 
-# project speicifc imports
+# project specific imports
 from .models import *
 from .forms.forms import *
+from . import record_forms as rf
 
 # generic python imports
 import decimal
@@ -31,9 +32,11 @@ def user_login(request):
             return HttpResponseRedirect(reverse('tracker:dashboard'))
     else:
         form = LoginUser()
+
     context = {
         'form': form
     }
+    
     return render(request, 'tracker/user_login.html', context)
 
 def user_register(request):
@@ -47,17 +50,21 @@ def user_register(request):
             return HttpResponseRedirect(reverse('tracker:user login'))
     else:
         form = RegisterUser()
+
     context = {
         'form': form
     }
+
     return render(request, 'tracker/user_register.html', context)  
     
 def user_logout(request):
     logout(request)
     form = LoginUser()
+
     context = {
         'form': form,
     }
+
     return render(request, 'tracker/user_login.html', context)
 
 ### MAIN DASHBOARD VIEW - HIGH OVERVIEW OF EVERYTHING
@@ -75,24 +82,13 @@ def dashboard(request):
     elif remainder == 2:
         add = 1
         
-    ## FORMS - goal_edit, milestone_add, reward_add, session_add
-    # milestone_add
+    ## FORMS - goal_add, milestone_add, reward_add, session_add
     if "goal_add_submit" in request.POST:
-        form_goal_add = GoalAdd(request.POST)
-        if form_goal_add.is_valid():
-            user = request.user
-            desc = request.POST['description']
-            hours = request.POST['hours']
-            hours_remaining = request.POST['hours']
-            created_date = datetime.datetime.now()
-            end_date = created_date + timedelta(days=int(request.POST['end_date']))
-            achieved_date = None
-            new_goal = Goal(user=user, description=desc, hours=hours, hours_remaining=hours_remaining,
-                created_date=created_date, end_date=end_date, achieved_date=achieved_date)
-            new_goal.save()
-            return HttpResponseRedirect(reverse('tracker:dashboard', args=()))
+        rf.goal_add_form(request)
+        return HttpResponseRedirect(reverse('tracker:dashboard', args=()))
     else:
         form_goal_add = GoalAdd()
+
     context = {
         'all_goals': all_goals,
         'all_milestones': all_milestones,
@@ -113,75 +109,23 @@ def goal_detail(request, goal_id):
     sessions = goal.session_set.order_by('-date')
     days_remaining = goal.end_date.replace(tzinfo=None) - datetime.datetime.now()
 
-
     ## FORMS - goal_edit, milestone_add, reward_add, session_add
-    # goal_edit
     if "goal_edit_submit" in request.POST:
-        form_goal_edit = GoalEdit(request.POST)
-        if form_goal_edit.is_valid():
-            ## This needs some major editing
-            # goal.end_date is acting strangely - sometimes removing a day
-            goal.description = request.POST['description']
-            goal.hours = request.POST['hours']
-            hours_remaining = decimal.Decimal(request.POST['hours'])
-            sessions = Session.objects.filter(goal=goal)
-            for session in sessions:
-                hours_remaining = hours_remaining - session.hour_count
-            goal.hours_remaining = hours_remaining
-            goal.end_date = datetime.datetime.now() + timedelta(days=int(request.POST['end_date'])+1)
-            goal.save()
-            return HttpResponseRedirect(reverse('tracker:goal detail', args=(goal.id,)))
+        rf.goal_edit_form(request, goal)
+        return HttpResponseRedirect(reverse('tracker:goal detail', args=(goal.id,)))
+    elif "milestone_add_submit" in request.POST:
+        rf.milestone_add_form(request, goal)
+        return HttpResponseRedirect(reverse('tracker:goal detail', args=(goal.id,)))
+    elif "reward_add_submit" in request.POST:
+        rf.reward_add_form(request, goal)
+        return HttpResponseRedirect(reverse('tracker:goal detail', args=(goal.id,)))
+    elif "session_add_submit" in request.POST:
+        rf.session_add_form(request, goal)
+        return HttpResponseRedirect(reverse('tracker:goal detail', args=(goal.id,)))
     else:
         form_goal_edit = GoalEdit()
-    # milestone_add
-    if "milestone_add_submit" in request.POST:
-        form_milestone_add = MilestoneAdd(request.POST)
-        if form_milestone_add.is_valid():
-            desc = request.POST['description']
-            hours = request.POST['hours']
-            hours_remaining = request.POST['hours']
-            created_date = datetime.datetime.now()
-            end_date = created_date + timedelta(days=int(request.POST['end_date']))
-            achieved_date = None
-            new_milestone = Milestone(goal=goal, description=desc, hours=hours, hours_remaining=hours_remaining,
-                created_date=created_date, end_date=end_date, achieved_date=achieved_date)
-            new_milestone.save()
-            return HttpResponseRedirect(reverse('tracker:goal detail', args=(goal.id,)))
-    else:
         form_milestone_add = MilestoneAdd()
-    # reward_add
-    if "reward_add_submit" in request.POST:
-        form_reward_add = RewardAdd(request.POST, request.FILES)
-        if form_reward_add.is_valid():
-            milestone = get_object_or_404(Milestone, pk=request.POST['milestone'])
-            desc = request.POST['description']
-            created_date = datetime.datetime.now()
-            rewarded = None
-            # handle_uploaded_file(request.FILES['photo'], milestone.id)
-            new_reward = Reward(goal=goal, milestone=milestone, description=desc, created_date=created_date, 
-                rewarded_date=None)
-            new_reward.save()
-            return HttpResponseRedirect(reverse('tracker:goal detail', args=(goal.id,)))
-    else:
         form_reward_add = RewardAdd()
-    # session_add
-    if "session_add_submit" in request.POST:
-        form_session_add = SessionAdd(request.POST)
-        if form_session_add.is_valid():
-            desc = request.POST['description']
-            session_hour_count = decimal.Decimal(request.POST['hour_count'])
-            milestone = get_object_or_404(Milestone, pk=request.POST['milestone'])
-            date = datetime.datetime.now()
-            difficulty = request.POST['difficulty']
-            new_session = Session(goal=goal, milestone=milestone, description=desc, date=date, 
-                hour_count=session_hour_count, difficulty=difficulty)
-            new_session.save()
-            goal.hours_remaining = goal.hours_remaining - session_hour_count
-            goal.save()
-            milestone.hours_remaining = milestone.hours_remaining - session_hour_count
-            milestone.save()
-            return HttpResponseRedirect(reverse('tracker:goal detail', args=(goal.id,)))
-    else:
         form_session_add = SessionAdd()
 
     context = {
@@ -285,57 +229,18 @@ def milestone_detail(request, goal_id, milestone_id):
     days_remaining = milestone.end_date.replace(tzinfo=None) - datetime.datetime.now()
     
     ## FORMS - milestone_edit, reward_add, session_add
-    # milestone_edit
     if "milestone_edit_submit" in request.POST:
-        form_milestone_edit = MilestoneEdit(request.POST)
-        if form_milestone_edit.is_valid():
-            ## This needs some major editing
-            # milestone.end_date is acting strangely - sometimes removing a day
-            milestone.description = request.POST['description']
-            milestone.hours = request.POST['hours']
-            hours_remaining = decimal.Decimal(request.POST['hours'])
-            sessions = Session.objects.filter(milestone=milestone)
-            for session in sessions:
-                hours_remaining = hours_remaining - session.hour_count
-            milestone.hours_remaining = hours_remaining
-            milestone.end_date = datetime.datetime.now() + timedelta(days=int(request.POST['end_date'])+1)
-            milestone.save()
-            return HttpResponseRedirect(reverse('tracker:milestone detail', args=(goal.id, milestone.id,)))
+        rf.milestone_edit_form(request, goal)
+        return HttpResponseRedirect(reverse('tracker:milestone detail', args=(goal.id, milestone.id,)))
+    elif "reward_add_submit" in request.POST:
+        rf.reward_add_form(request, goal)
+        return HttpResponseRedirect(reverse('tracker:milestone detail', args=(goal.id, milestone.id,)))
+    elif "session_add_submit" in request.POST:
+        rf.session_add_form(request, goal)
+        return HttpResponseRedirect(reverse('tracker:milestone detail', args=(goal.id, milestone.id,)))
     else:
-        form_milestone_edit = GoalEdit()
-    # reward_add
-    if "reward_add_submit" in request.POST:
-        form_reward_add = RewardAdd(request.POST, request.FILES)
-        if form_reward_add.is_valid():
-            milestone = get_object_or_404(Milestone, pk=request.POST['milestone'])
-            desc = request.POST['description']
-            created_date = datetime.datetime.now()
-            rewarded = None
-            # handle_uploaded_file(request.FILES['photo'], milestone.id)
-            new_reward = Reward(goal=goal, milestone=milestone, description=desc, created_date=created_date, 
-                rewarded_date=None)
-            new_reward.save()
-            return HttpResponseRedirect(reverse('tracker:milestone detail', args=(goal.id, milestone.id,)))
-    else:
+        form_milestone_edit = MilestoneEdit()
         form_reward_add = RewardAdd()
-    # session_add
-    if "session_add_submit" in request.POST:
-        form_session_add = SessionAdd(request.POST)
-        if form_session_add.is_valid():
-            desc = request.POST['description']
-            session_hour_count = decimal.Decimal(request.POST['hour_count'])
-            milestone = get_object_or_404(Milestone, pk=request.POST['milestone'])
-            date = datetime.datetime.now()
-            difficulty = request.POST['difficulty']
-            new_session = Session(goal=goal, milestone=milestone, description=desc, date=date, 
-                hour_count=session_hour_count, difficulty=difficulty)
-            new_session.save()
-            goal.hours_remaining = goal.hours_remaining - session_hour_count
-            goal.save()
-            milestone.hours_remaining = milestone.hours_remaining - session_hour_count
-            milestone.save()
-            return HttpResponseRedirect(reverse('tracker:milestone detail', args=(goal.id, milestone.id,)))
-    else:
         form_session_add = SessionAdd()
     
     context = {
@@ -360,35 +265,16 @@ def reward_detail(request, goal_id, reward_id):
     sessions = reward.milestone.session_set.all().order_by('date')
 
     ## FORMS - reward_edit, session_add
-    # reward_edit
     if "reward_edit_submit" in request.POST:
-        form_reward_edit = RewardEdit(request.POST)
-        if form_reward_edit.is_valid():
-            reward.milestone = get_object_or_404(Milestone, pk=request.POST['milestone'])
-            reward.description = request.POST['description']
-            reward.save()
-            return HttpResponseRedirect(reverse('tracker:reward detail', args=(goal.id, reward.id,)))
+        rf.reward_edit_form(request, goal)
+        return HttpResponseRedirect(reverse('tracker:reward detail', args=(goal.id, reward.id,)))
+    elif "session_add_submit" in request.POST:
+        rf.session_add_form(request, goal)
+        return HttpResponseRedirect(reverse('tracker:reward detail', args=(goal.id, reward.id,)))
     else:
         form_reward_edit = RewardEdit()
-    # session_add
-    if "session_add_submit" in request.POST:
-        form_session_add = SessionAdd(request.POST)
-        if form_session_add.is_valid():
-            desc = request.POST['description']
-            session_hour_count = decimal.Decimal(request.POST['hour_count'])
-            milestone = get_object_or_404(Milestone, pk=request.POST['milestone'])
-            date = datetime.datetime.now()
-            difficulty = request.POST['difficulty']
-            new_session = Session(goal=goal, milestone=milestone, description=desc, date=date, 
-                hour_count=session_hour_count, difficulty=difficulty)
-            new_session.save()
-            goal.hours_remaining = goal.hours_remaining - session_hour_count
-            goal.save()
-            milestone.hours_remaining = milestone.hours_remaining - session_hour_count
-            milestone.save()
-            return HttpResponseRedirect(reverse('tracker:reward detail', args=(goal.id, reward.id,)))
-    else:
         form_session_add = SessionAdd()
+        
     context = {
         'goal': reward.goal,
         'milestone': reward.milestone,
@@ -409,18 +295,12 @@ def session_detail(request, goal_id, session_id):
     session = get_object_or_404(Session, pk=session_id, goal=goal_id)
     
     ## FORMS - session_edit
-    # session_edit
     if "session_edit_submit" in request.POST:
-        form_session_edit = SessionEdit(request.POST)
-        if form_session_edit.is_valid():
-            session.milestone = get_object_or_404(Milestone, pk=request.POST['milestone'])
-            session.description = request.POST['description']
-            session.hour_count = request.POST['hour_count']
-            session.difficulty = request.POST['difficulty']
-            session.save()
-            return HttpResponseRedirect(reverse('tracker:session detail', args=(goal.id, session.id,)))
+        rf.session_edit_form(request, goal)
+        return HttpResponseRedirect(reverse('tracker:session detail', args=(goal.id, session.id,)))
     else:
         form_session_edit = SessionEdit()
+
     context = {
         'goal': session.goal,
         'milestone': session.milestone,
